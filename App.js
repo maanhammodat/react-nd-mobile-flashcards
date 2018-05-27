@@ -1,24 +1,25 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Constants } from 'expo'
-import DeckList from './components/DeckList';
+import { Text, View } from 'react-native';
+import { Constants } from 'expo';
+import { AppProvider } from './components/provider';
+import DeckListContainer from './components/DeckListContainer';
 import Deck from './components/Deck';
 import { createStackNavigator } from 'react-navigation';
+
 
 // export default class App extends React.Component {
 //   render() {
 //     return (
-//       <View>
-//         <View style={{ height: Constants.statusBarHeight }}></View>
-//         <DeckList />
-//       </View>
-//     );
+//       <AppProvider>
+//         <Test/>
+//       </AppProvider>
+//     )
 //   }
 // }
 
 const RootStack = createStackNavigator(
   {
-    Home: DeckList,
+    Home: DeckListContainer,
     Deck: Deck
   },
   {
@@ -29,9 +30,9 @@ const RootStack = createStackNavigator(
 export default class App extends React.Component {
   render() {
     return (
-      <View style={{ flex: 1, height: Constants.statusBarHeight }}>
+      <AppProvider>
         <RootStack />
-      </View>
+      </AppProvider>
     )
   }
 }

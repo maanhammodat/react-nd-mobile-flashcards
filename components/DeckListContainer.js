@@ -2,41 +2,21 @@ import React, { Component } from 'react';
 import { View, Image, Alert } from 'react-native'
 import { Tile, List, ListItem, Button, Text } from 'react-native-elements';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import { AppContext } from './provider';
 
-export default class DeckList extends Component {
+export default DeckListContainer = () => (
+    <AppContext.Consumer>
+        {context => <DeckList cards={context.cards} />}
+    </AppContext.Consumer>
+);
+
+class DeckList extends Component {
     constructor(props) {
         super(props);
 
         this.showAlert = this.showAlert.bind(this);
     }
     state = {
-        cards : {
-            React: {
-                title: 'React',
-                questions: [
-                    {
-                        id: 1,
-                        question: 'What is React?',
-                        answer: 'A library for managing user interfaces'
-                    },
-                    {
-                        id: 2,
-                        question: 'Where do you make Ajax requests in React?',
-                        answer: 'The componentDidMount lifecycle event'
-                    }
-                ]
-            },
-            JavaScript: {
-                title: 'JavaScript',
-                questions: [
-                    {
-                        id: 3,
-                        question: 'What is a closure?',
-                        answer: 'The combination of a function and the lexical environment within which that function was declared.'
-                    }
-                ]
-            }
-        },
         addDeck : false
     }
 
@@ -46,11 +26,12 @@ export default class DeckList extends Component {
         )
     }
     render() {
-        const { cards, addDeck } = this.state;
+        const { cards } = this.props;
+        const addDeck = this.state.addDeck;
         const list = Object.keys(cards);
         
         return (
-            <View>
+            <View style={{ flex: 1 }}>
 
                 <Tile
                     imageSrc={require('../images/brain.png')}
@@ -66,32 +47,36 @@ export default class DeckList extends Component {
                     imageContainerStyle={{ height: 150 }}
                     containerStyle={{ height: 150 }}
                 />
+                
                 {!addDeck && (
-                    <View>
-                        <Button
-                            raised
-                            icon={{ name: 'plus', type: 'font-awesome' }}
-                            title='Add Deck'
-                            onPress={() => {
-                                this.setState({ addDeck: true })
-                            }}
-                        />
+                    <View style={{ flex: 1 }}>
                         <List>
                             {
                                 list.map((item, i) => (
                                     <ListItem
                                         key={i}
-                                        title={item}
+                                        title={cards[item]["title"]}
                                         badge={{value: cards[item]["questions"].length}}
                                         onPress={() => { 
                                             this.props.navigation.navigate('Deck', {
-                                                card: JSON.stringify(cards[item])
+                                                card: JSON.stringify(cards[item]),
+                                                title: cards[item]["title"]
                                             });
                                         }}
                                     />
                                 ))
                             }
                         </List>
+                        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+                            <Button
+                                raised
+                                icon={{ name: 'plus', type: 'font-awesome' }}
+                                title='Add Deck'
+                                onPress={() => {
+                                    this.setState({ addDeck: true })
+                                }}
+                            />
+                        </View>
                     </View>
                 )}
 
@@ -116,8 +101,10 @@ export default class DeckList extends Component {
                         />
                     </View>
                 )}
-                
+
             </View>
+
+            
         )
     }
 }
