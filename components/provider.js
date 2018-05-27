@@ -34,26 +34,35 @@ export const AppContext = React.createContext();
 
 export class AppProvider extends React.Component {
   state = {
-    cards: {}
+    decks: {}
   }
   componentDidMount() {
 
-    // store.save('cards', base)
+    // store.save('decks', base)
     //   .then(() => {
 
-    //     this.setState({ cards: base })
+    //     this.setState({ decks: base })
 
     //   });
-    store.get('cards')
-      .then((cards) => {
-        this.setState({ cards })
+    store.get('decks')
+      .then((decks) => {
+        if(decks){
+          this.setState({ decks })
+        }else{
+          store.save('decks', base)
+          .then(() => {
+
+            this.setState({ decks: base })
+
+          });
+        }
       })
 
   }
   render() {
     return (
       <AppContext.Provider value={{
-        cards: this.state.cards,
+        decks: this.state.decks,
       }}>
         {this.props.children}
       </AppContext.Provider>

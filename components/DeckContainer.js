@@ -1,32 +1,49 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Button } from 'react-native-elements';
+import { AppContext } from './provider';
 
-export default class Deck extends Component {
+export default class DeckContainer extends Component {
+    render(){
+        const { deck } = this.props.navigation.state.params;
+        return(
+            <AppContext.Consumer>
+                {context => 
+                    <Deck 
+                        deck={deck}
+                    />
+                }
+            </AppContext.Consumer>
+        )    
+    }
+}
+    
 
-    static navigationOptions = ({ navigation }) => {
+class Deck extends Component {
 
-        const params = navigation.state.params || {};
-        const title = params.title;
+    // static navigationOptions = ({ navigation }) => {
 
-        return {
-            headerTitle: title,
-            headerRight: (
-                <Button
-                    onPress={() => alert('This is a button!')}
-                    title="Delete"
-                    color="#fff"
-                />
-            ),
-        }
-    };
+    //     const params = navigation.state.params || {};
+    //     const title = params.title;
+
+    //     return {
+    //         headerTitle: title,
+    //         headerRight: (
+    //             <Button
+    //                 onPress={() => alert('This is a button!')}
+    //                 title="Delete"
+    //                 color="#fff"
+    //             />
+    //         ),
+    //     }
+    // };
     
     render() {
-        const { navigation } = this.props;
+        //const { navigation } = this.props;
 
-        const { card } = this.props.navigation.state.params;
+        const { deck } = this.props;
         
-        const questions = card && JSON.parse(card).questions;
+        const questions = deck && JSON.parse(deck).questions;
         
         return (
             <View style={{ flex: 1 }}>

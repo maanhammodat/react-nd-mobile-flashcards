@@ -4,11 +4,20 @@ import { Tile, List, ListItem, Button, Text } from 'react-native-elements';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import { AppContext } from './provider';
 
-export default DeckListContainer = () => (
-    <AppContext.Consumer>
-        {context => <DeckList cards={context.cards} />}
-    </AppContext.Consumer>
-);
+export default class DeckListContainer extends Component {
+    render() {
+        return (
+            <AppContext.Consumer>
+                {context => 
+                    <DeckList 
+                        decks={context.decks} 
+                        navigation={this.props.navigation}
+                    />
+                }
+            </AppContext.Consumer>
+        )
+    }
+};
 
 class DeckList extends Component {
     constructor(props) {
@@ -26,9 +35,9 @@ class DeckList extends Component {
         )
     }
     render() {
-        const { cards } = this.props;
+        const { decks } = this.props;
         const addDeck = this.state.addDeck;
-        const list = Object.keys(cards);
+        const list = decks ? Object.keys(decks) : false;
         
         return (
             <View style={{ flex: 1 }}>
@@ -48,19 +57,19 @@ class DeckList extends Component {
                     containerStyle={{ height: 150 }}
                 />
                 
-                {!addDeck && (
+                {(!addDeck && list) && (
                     <View style={{ flex: 1 }}>
                         <List>
                             {
                                 list.map((item, i) => (
                                     <ListItem
                                         key={i}
-                                        title={cards[item]["title"]}
-                                        badge={{value: cards[item]["questions"].length}}
+                                        title={decks[item]["title"]}
+                                        badge={{value: decks[item]["questions"].length}}
                                         onPress={() => { 
                                             this.props.navigation.navigate('Deck', {
-                                                card: JSON.stringify(cards[item]),
-                                                title: cards[item]["title"]
+                                                deck: JSON.stringify(decks[item]),
+                                                title: decks[item]["title"]
                                             });
                                         }}
                                     />

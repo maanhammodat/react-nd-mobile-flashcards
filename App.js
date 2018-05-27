@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { Constants } from 'expo';
 import { AppProvider } from './components/provider';
 import DeckListContainer from './components/DeckListContainer';
-import Deck from './components/Deck';
+import DeckContainer from './components/DeckContainer';
 import { createStackNavigator } from 'react-navigation';
 
 
@@ -20,7 +20,7 @@ import { createStackNavigator } from 'react-navigation';
 const RootStack = createStackNavigator(
   {
     Home: DeckListContainer,
-    Deck: Deck
+    Deck: DeckContainer
   },
   {
     initialRouteName: 'Home',
