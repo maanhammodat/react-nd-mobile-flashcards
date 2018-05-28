@@ -4,13 +4,30 @@ import { Button } from 'react-native-elements';
 import { AppContext } from './provider';
 
 export default class DeckContainer extends Component {
+
+    static navigationOptions = ({ navigation }) => {
+
+        const params = navigation.state.params || {};
+        const title = params.title;
+
+        return {
+            headerTitle: title,
+            headerRight: (
+                <Button
+                    onPress={() => alert('This is a button!')}
+                    title="Delete"
+                    color="#fff"
+                />
+            ),
+        }
+    };
+    
     render(){
-        const { deck } = this.props.navigation.state.params;
         return(
             <AppContext.Consumer>
                 {context => 
                     <Deck 
-                        deck={deck}
+                        navigation={this.props.navigation}
                     />
                 }
             </AppContext.Consumer>
@@ -21,27 +38,12 @@ export default class DeckContainer extends Component {
 
 class Deck extends Component {
 
-    // static navigationOptions = ({ navigation }) => {
-
-    //     const params = navigation.state.params || {};
-    //     const title = params.title;
-
-    //     return {
-    //         headerTitle: title,
-    //         headerRight: (
-    //             <Button
-    //                 onPress={() => alert('This is a button!')}
-    //                 title="Delete"
-    //                 color="#fff"
-    //             />
-    //         ),
-    //     }
-    // };
+    
     
     render() {
         //const { navigation } = this.props;
 
-        const { deck } = this.props;
+        const { deck } = this.props.navigation.state.params;
         
         const questions = deck && JSON.parse(deck).questions;
         

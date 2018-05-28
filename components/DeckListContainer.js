@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Image, Alert } from 'react-native'
+import { View, Image, Alert } from 'react-native';
 import { Tile, List, ListItem, Button, Text } from 'react-native-elements';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import { AppContext } from './provider';
+import * as uuid from '../utils/uuid';
 
 export default class DeckListContainer extends Component {
     render() {
@@ -10,7 +11,8 @@ export default class DeckListContainer extends Component {
             <AppContext.Consumer>
                 {context => 
                     <DeckList 
-                        decks={context.decks} 
+                        decks={context.decks}
+                        addDeck={context.addDeck}
                         navigation={this.props.navigation}
                     />
                 }
@@ -29,6 +31,15 @@ class DeckList extends Component {
         addDeck : false
     }
 
+    addDeck(title){
+        const deck = {}
+        deck.id = uuid.generate();
+        deck.questions = [];
+        deck.title = title;
+        // Alert.alert('addDeck child', JSON.stringify(deck));
+        this.props.addDeck(deck);
+    }
+
     showAlert(title){
         Alert.alert(
             `Title is ${title}`
@@ -37,14 +48,13 @@ class DeckList extends Component {
     render() {
         const { decks } = this.props;
         const addDeck = this.state.addDeck;
-        const list = decks ? Object.keys(decks) : false;
-        
+        console.log('render2',decks);
         return (
             <View style={{ flex: 1 }}>
 
                 <Tile
                     imageSrc={require('../images/brain.png')}
-                    title="Flash Cards v0.2"
+                    title="Flash Cards v0.10"
                     featured
                     titleStyle={{ 
                         marginTop: 110, 
@@ -56,20 +66,20 @@ class DeckList extends Component {
                     imageContainerStyle={{ height: 150 }}
                     containerStyle={{ height: 150 }}
                 />
-                
-                {(!addDeck && list) && (
+
+                {(!addDeck && (Object.keys(decks).length > 0)) && (
                     <View style={{ flex: 1 }}>
                         <List>
                             {
-                                list.map((item, i) => (
+                                decks.map((item, i) => (
                                     <ListItem
                                         key={i}
-                                        title={decks[item]["title"]}
-                                        badge={{value: decks[item]["questions"].length}}
+                                        title={item["title"]}
+                                        badge={{value: item["questions"].length}}
                                         onPress={() => { 
                                             this.props.navigation.navigate('Deck', {
-                                                deck: JSON.stringify(decks[item]),
-                                                title: decks[item]["title"]
+                                                deck: JSON.stringify(item),
+                                                title: item["title"]
                                             });
                                         }}
                                     />
@@ -82,7 +92,8 @@ class DeckList extends Component {
                                 icon={{ name: 'plus', type: 'font-awesome' }}
                                 title='Add Deck'
                                 onPress={() => {
-                                    this.setState({ addDeck: true })
+                                    //this.setState({ addDeck: true })
+                                    this.addDeck('heyyyyo9');
                                 }}
                             />
                         </View>
