@@ -112,10 +112,12 @@ export class AppProvider extends React.Component {
 
   addDeck(deck) {
     // const _this = this;
+    console.log('addDeck called..');
     store.push('decks', deck)
     .then(() => store.get('decks'))
     .then(decks => {
       this.setState({ decks });
+      console.log('Deck added!');
       //Alert.alert('state', JSON.stringify(this.state.decks));
     })
     

@@ -4,6 +4,7 @@ import { Constants } from 'expo';
 import { AppProvider } from './components/provider';
 import DeckListContainer from './components/DeckListContainer';
 import DeckContainer from './components/DeckContainer';
+import AddDeck from './components/AddDeck';
 import { createStackNavigator } from 'react-navigation';
 
 
@@ -20,6 +21,7 @@ import { createStackNavigator } from 'react-navigation';
 const RootStack = createStackNavigator(
   {
     Home: DeckListContainer,
+    AddDeck: AddDeck,
     Deck: DeckContainer
   },
   {

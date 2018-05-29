@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, Alert } from 'react-native';
 import { Tile, List, ListItem, Button, Text } from 'react-native-elements';
-import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import { AppContext } from './provider';
-import * as uuid from '../utils/uuid';
 
 export default class DeckListContainer extends Component {
     render() {
@@ -28,16 +26,7 @@ class DeckList extends Component {
         this.showAlert = this.showAlert.bind(this);
     }
     state = {
-        addDeck : false
-    }
-
-    addDeck(title){
-        const deck = {}
-        deck.id = uuid.generate();
-        deck.questions = [];
-        deck.title = title;
-        // Alert.alert('addDeck child', JSON.stringify(deck));
-        this.props.addDeck(deck);
+        addDeck : true
     }
 
     showAlert(title){
@@ -48,7 +37,6 @@ class DeckList extends Component {
     render() {
         const { decks } = this.props;
         const addDeck = this.state.addDeck;
-        console.log('render2',decks);
         return (
             <View style={{ flex: 1 }}>
 
@@ -67,7 +55,7 @@ class DeckList extends Component {
                     containerStyle={{ height: 150 }}
                 />
 
-                {(!addDeck && (Object.keys(decks).length > 0)) && (
+                {(Object.keys(decks).length > 0) && (
                     <View style={{ flex: 1 }}>
                         <List>
                             {
@@ -93,32 +81,11 @@ class DeckList extends Component {
                                 title='Add Deck'
                                 onPress={() => {
                                     //this.setState({ addDeck: true })
-                                    this.addDeck('heyyyyo9');
+                                    //this.addDeck('heyyyyo9');
+                                    this.props.navigation.navigate('AddDeck');
                                 }}
                             />
                         </View>
-                    </View>
-                )}
-
-                {addDeck && (
-                    <View>
-                        <Text h4 style={{ marginLeft: 20 }}>Add a Deck</Text>
-                        <FormLabel>Name</FormLabel>
-                        <FormInput />
-                        <FormValidationMessage>Error message</FormValidationMessage>
-                        <Button
-                            raised
-                            title='SUBMIT'
-                        />
-                        <Button
-                            raised
-                            icon={{ name: 'ban', type: 'font-awesome' }}
-                            backgroundColor={ '#cb2431' }
-                            title='CANCEL'
-                            onPress={() => {
-                                this.setState({ addDeck: false })
-                            }}
-                        />
                     </View>
                 )}
 
