@@ -5,6 +5,8 @@ import { AppContext } from './provider';
 
 export default class DeckContainer extends Component {
     //TODO: try moving navigationOptions to Deck
+    //Then edit title through callback function on goback:
+    //https://stackoverflow.com/questions/44223727/react-navigation-goback-and-update-parent-state
     static navigationOptions = ({ navigation }) => {
         console.log('DeckContainer: navopts');
         const params = navigation.state.params || {};
