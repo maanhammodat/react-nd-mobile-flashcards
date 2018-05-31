@@ -4,9 +4,9 @@ import { Button } from 'react-native-elements';
 import { AppContext } from './provider';
 
 export default class DeckContainer extends Component {
-
+    //TODO: try moving navigationOptions to Deck
     static navigationOptions = ({ navigation }) => {
-
+        console.log('DeckContainer: navopts');
         const params = navigation.state.params || {};
         const title = params.title;
 
@@ -21,12 +21,23 @@ export default class DeckContainer extends Component {
             ),
         }
     };
+
+    state = {
+        deck: this.props.navigation.state.params.deck,
+        title: this.props.navigation.state.params.title
+    }
     
+    updateTitle(){
+
+    }
+
     render(){
+        console.log('DeckContainer: render');
         return(
             <AppContext.Consumer>
                 {context => 
                     <Deck 
+                        decks={context.decks}
                         navigation={this.props.navigation}
                     />
                 }
@@ -38,14 +49,22 @@ export default class DeckContainer extends Component {
 
 class Deck extends Component {
 
-    
+    state = {
+        deck: this.props.navigation.state.params.deck,
+        decks: this.props.decks,
+        title: ''
+    }
     
     render() {
-        //const { navigation } = this.props;
 
-        const { deck } = this.props.navigation.state.params;
+        let deck = this.state.deck;
+        deck = deck ? JSON.parse(deck) : {};
         
-        const questions = deck && JSON.parse(deck).questions;
+        const questions = deck.questions;
+        const title = deck.title;
+        const id = deck.id;
+
+        console.log('Deck: title',title);
         
         return (
             <View style={{ flex: 1 }}>
@@ -86,8 +105,11 @@ class Deck extends Component {
                     <Button
                         raised
                         title='Edit Deck'
-                        onPress={() => {
-                            this.setState({ addDeck: true })
+                        onPress={() => { 
+                            this.props.navigation.navigate('EditDeck', {
+                                id,
+                                title
+                            });
                         }}
                     />
                 </View>

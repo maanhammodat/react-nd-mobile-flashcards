@@ -26,7 +26,7 @@ class DeckList extends Component {
         this.showAlert = this.showAlert.bind(this);
     }
     state = {
-        addDeck : true
+        decks: this.props.decks
     }
 
     showAlert(title){
@@ -35,14 +35,15 @@ class DeckList extends Component {
         )
     }
     render() {
+
         const { decks } = this.props;
-        const addDeck = this.state.addDeck;
+
         return (
             <View style={{ flex: 1 }}>
 
                 <Tile
                     imageSrc={require('../images/brain.png')}
-                    title="Flash Cards v0.10"
+                    title="Flash Cards v0.15"
                     featured
                     titleStyle={{ 
                         marginTop: 110, 
@@ -80,8 +81,6 @@ class DeckList extends Component {
                                 icon={{ name: 'plus', type: 'font-awesome' }}
                                 title='Add Deck'
                                 onPress={() => {
-                                    //this.setState({ addDeck: true })
-                                    //this.addDeck('heyyyyo9');
                                     this.props.navigation.navigate('AddDeck');
                                 }}
                             />

@@ -75,6 +75,7 @@ export class AppProvider extends React.Component {
 
       // only needed if used in a callback
       this.addDeck = this.addDeck.bind(this);
+      this.editDeckTitle = this.editDeckTitle.bind(this);
   }
   
   componentDidMount() {
@@ -111,23 +112,46 @@ export class AppProvider extends React.Component {
   }
 
   addDeck(deck) {
-    // const _this = this;
-    console.log('addDeck called..');
+    
+    console.log('addDeck: called..');
     store.push('decks', deck)
     .then(() => store.get('decks'))
     .then(decks => {
       this.setState({ decks });
-      console.log('Deck added!');
-      //Alert.alert('state', JSON.stringify(this.state.decks));
+      console.log('addDeck: deck added!');
+      
     })
     
-    //Alert.alert('addDeck Parent', JSON.stringify(deck));
   }
+
+  editDeckTitle(id, title) {
+
+    let _this = this;
+    let decks = _this.state.decks;
+
+    return new Promise(function (resolve, reject) {
+
+      console.log('editDeckTitle: called..');
+      decks = decks.map((deck) => deck.id === id ? Object.assign({}, deck, {title}) : deck );
+      console.log('editDeckTitle: deck title edited..');
+      
+      store.save('decks', decks)
+      .then(() => store.get('decks'))
+      .then(decks => {
+        _this.setState({ decks });
+        console.log('editDeckTitle: decks updated in AS and state!');
+        resolve();
+      });
+    });
+
+  }
+
   render() {
     return (
       <AppContext.Provider value={{
         decks: this.state.decks,
-        addDeck: this.addDeck
+        addDeck: this.addDeck,
+        editDeckTitle: this.editDeckTitle
       }}>
         {this.props.children}
       </AppContext.Provider>
