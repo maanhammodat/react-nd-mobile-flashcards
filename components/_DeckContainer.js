@@ -15,20 +15,10 @@ export default class DeckContainer extends Component {
     //TODO: try moving navigationOptions to Deck
     //Then edit title through callback function on goback:
     //https://stackoverflow.com/questions/44223727/react-navigation-goback-and-update-parent-state
-
-    // static navigationProps = {
-    //     header: ({ state }) => {
-    //         return {
-    //             title: "HEYYYY"
-    //         }
-    //     }
-    // }
     static navigationOptions = ({ navigation }) => {
-        
+        console.log('DeckContainer: navopts');
         const params = navigation.state.params || {};
         const title = params.title;
-
-        console.log('DeckContainer: navopts');
 
         return {
             headerTitle: title,
@@ -46,13 +36,6 @@ export default class DeckContainer extends Component {
         deck: this.props.navigation.state.params.deck,
         title: this.props.navigation.state.params.title,
         stale: 1
-    }
-
-    componentDidMount(){
-        // this.props.navigation.setParams({
-        //     title: "HEYY"
-        // });
-        console.log('DeckCOntainer: componentDidMount');
     }
 
     updateTitle(title){

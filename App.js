@@ -6,6 +6,7 @@ import DeckListContainer from './components/DeckListContainer';
 import DeckContainer from './components/DeckContainer';
 import AddDeck from './components/AddDeck';
 import EditDeck from './components/EditDeck';
+import AddCard from './components/AddCard';
 import { createStackNavigator } from 'react-navigation';
 
 
@@ -16,7 +17,8 @@ const RootStack = createStackNavigator(
     Home: DeckListContainer,
     AddDeck: AddDeck,
     Deck: DeckContainer,
-    EditDeck: EditDeck
+    EditDeck: EditDeck,
+    AddCard: AddCard
   },
   {
     initialRouteName: 'Home',

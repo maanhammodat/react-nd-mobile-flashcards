@@ -40,10 +40,10 @@ class DeckList extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-
-                <Tile
+                <Text>Flash Cards v0.17: Deck List</Text>
+                {/* <Tile
                     imageSrc={require('../images/brain.png')}
-                    title="Flash Cards v0.15"
+                    title="Flash Cards v0.17"
                     featured
                     titleStyle={{ 
                         marginTop: 110, 
@@ -54,7 +54,7 @@ class DeckList extends Component {
                     }}
                     imageContainerStyle={{ height: 150 }}
                     containerStyle={{ height: 150 }}
-                />
+                /> */}
 
                 {(Object.keys(decks).length > 0) && (
                     <View style={{ flex: 1 }}>

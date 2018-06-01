@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import store from 'react-native-simple-store';
 import { Alert } from 'react-native';
+import { NavigationActions, withNavigation } from 'react-navigation';
 
 const base = [
   {
@@ -76,6 +77,7 @@ export class AppProvider extends React.Component {
       // only needed if used in a callback
       this.addDeck = this.addDeck.bind(this);
       this.editDeckTitle = this.editDeckTitle.bind(this);
+      this.addCardToDeck = this.addCardToDeck.bind(this);
   }
   
   componentDidMount() {
@@ -87,7 +89,7 @@ export class AppProvider extends React.Component {
 
     //   });
     
-    // store.delete('decks');
+    //store.delete('decks');
 
     store.get('decks').then((decks) => {
 
@@ -107,28 +109,40 @@ export class AppProvider extends React.Component {
           });
         }
 
-      })
+      });
 
   }
 
-  addDeck(deck) {
+  addDeck(deck, key) {
     
-    console.log('addDeck: called..');
-    store.push('decks', deck)
-    .then(() => store.get('decks'))
-    .then(decks => {
-      this.setState({ decks });
-      console.log('addDeck: deck added!');
-      
-    })
+    let _this = this;
+
+    const setParamsAction = NavigationActions.setParams({
+      params: { title: 'Hello' },
+      key: key,
+    });
+    this.props.navigation.dispatch(setParamsAction);
+
+    return new Promise(function (resolve, reject) {
+      console.log('addDeck: called..');
+      store.push('decks', deck)
+      .then(() => store.get('decks'))
+      .then(decks => {
+        _this.setState({ decks });
+        console.log('addDeck: deck added!',JSON.stringify(decks));
+
+        resolve();
+      })
+    });
+    
     
   }
 
   editDeckTitle(id, title) {
 
+    let decks = this.state.decks;
     let _this = this;
-    let decks = _this.state.decks;
-
+    
     return new Promise(function (resolve, reject) {
 
       console.log('editDeckTitle: called..');
@@ -146,12 +160,39 @@ export class AppProvider extends React.Component {
 
   }
 
+  addCardToDeck(id, card) {
+
+    let decks = this.state.decks;
+    let _this = this;
+
+    return new Promise(function (resolve, reject) {
+
+      console.log('addCardToDeck: called..');
+      decks = decks.map((deck) => {
+        deck.id === id && deck["questions"].push(card);
+        return deck;
+      });
+      console.log('addCardToDeck: deck card created..');
+
+      store.save('decks', decks)
+      .then(() => store.get('decks'))
+      .then(decks => {
+        _this.setState({ decks });
+        console.log('addCardToDeck: decks updated in AS and state!');
+        resolve();
+      });
+
+    });
+
+  }
+
   render() {
     return (
       <AppContext.Provider value={{
         decks: this.state.decks,
         addDeck: this.addDeck,
-        editDeckTitle: this.editDeckTitle
+        editDeckTitle: this.editDeckTitle,
+        addCardToDeck: this.addCardToDeck
       }}>
         {this.props.children}
       </AppContext.Provider>

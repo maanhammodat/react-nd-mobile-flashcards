@@ -5,13 +5,13 @@ import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elemen
 import { AppContext } from './provider';
 import * as uuid from '../utils/uuid';
 
-export default class AddDeck extends Component {
+export default class AddCard extends Component {
     render() {
         return (
             <AppContext.Consumer>
                 {context => 
-                    <AddDeckForm
-                        addDeck={context.addDeck}
+                    <AddCardForm
+                        addCardToDeck={context.addCardToDeck}
                         navigation={this.props.navigation}
                     />
                 }
@@ -20,34 +20,46 @@ export default class AddDeck extends Component {
     }
 };
 
-class AddDeckForm extends Component {
+class AddCardForm extends Component {
 
     state = {
-        deckTitle : ''
+        question: '',
+        answer: ''
     }
 
-    addDeck(){
-        const title = this.state.deckTitle;
+    addCardToDeck() {
 
-        if (!title) return;
+        const question = this.state.question;
+        const answer = this.state.answer;
+
+        if (!question || !answer) return;
+
+        const deckId = this.props.navigation.state.params.id;
+
+        const card = {}
+        card.question = question;
+        card.answer = answer;
+        card.id = uuid.generate();
+        console.log('addCardToDeck:',card);
         
-        const deck = {};
-
-        deck.id = uuid.generate();
-        deck.questions = [];
-        deck.title = title;
-        console.log('AddDeckForm addDeck:',deck);
-        this.props.addDeck(deck);
-        this.props.navigation.goBack();
+        this.props.addCardToDeck(deckId, card)
+        .then(() => {
+            this.props.navigation.goBack();
+        });
     }
 
     render() {
+        
         return (
             <View style={{ flex: 1 }}>
-                <Text h4 style={{ marginLeft: 20 }}>Add a Deck</Text>
-                <FormLabel>Name</FormLabel>
+                <Text h4 style={{ marginLeft: 20 }}>Add Card</Text>
+                <FormLabel>Question</FormLabel>
                 <FormInput
-                onChangeText={deckTitle => this.setState(() => ({ deckTitle }))}
+                    onChangeText={question => this.setState(() => ({ question }))}
+                />
+                <FormLabel>Answer</FormLabel>
+                <FormInput
+                    onChangeText={answer => this.setState(() => ({ answer }))}
                 />
                 <FormValidationMessage>Error message</FormValidationMessage>
 
@@ -56,7 +68,7 @@ class AddDeckForm extends Component {
                         raised
                         title='SUBMIT'
                         onPress={() => {
-                            this.addDeck();
+                            this.addCardToDeck();
                         }}
                     />
                     <Button
@@ -65,7 +77,7 @@ class AddDeckForm extends Component {
                         backgroundColor={ '#cb2431' }
                         title='CANCEL'                             
                         onPress={() => {
-                            this.props.navigation.navigate('Home');
+                            this.props.navigation.goBack();
                         }}
                     />
                 </View>

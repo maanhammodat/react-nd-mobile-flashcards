@@ -3,7 +3,6 @@ import { View, Image, Alert } from 'react-native';
 import { Tile, List, ListItem, Button, Text } from 'react-native-elements';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import { AppContext } from './provider';
-import { NavigationActions } from 'react-navigation';
 
 export default class EditDeck extends Component {
     render() {
@@ -27,12 +26,7 @@ class EditDeckForm extends Component {
     }
 
     editDeckTitle(){
-        const setParamsAction = NavigationActions.setParams({
-          params: { title: 'Hello' },
-          key: 'Deck',
-        });
-        this.props.navigation.dispatch(setParamsAction);
-        
+
         const id = this.props.navigation.state.params.id;
         const title = this.state.deckTitle;
 
@@ -40,6 +34,7 @@ class EditDeckForm extends Component {
         
         this.props.editDeckTitle(id, title)
         .then(() => {
+            this.props.navigation.state.params.onGoBack(title);
             this.props.navigation.goBack();
         });
     }
