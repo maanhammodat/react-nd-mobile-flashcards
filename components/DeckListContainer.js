@@ -9,9 +9,11 @@ export default class DeckListContainer extends Component {
             <AppContext.Consumer>
                 {context => 
                     <DeckList 
+                        navigation={this.props.navigation}
                         decks={context.decks}
                         addDeck={context.addDeck}
-                        navigation={this.props.navigation}
+                        updateTitle={context.updateTitle} 
+                        addCardToDeck={context.addCardToDeck}
                     />
                 }
             </AppContext.Consumer>
@@ -40,7 +42,7 @@ class DeckList extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <Text>Flash Cards v0.17: Deck List</Text>
+                <Text>Flash Cards v0.18: Deck List</Text>
                 {/* <Tile
                     imageSrc={require('../images/brain.png')}
                     title="Flash Cards v0.17"
@@ -67,8 +69,11 @@ class DeckList extends Component {
                                         badge={{value: item["questions"].length}}
                                         onPress={() => { 
                                             this.props.navigation.navigate('Deck', {
-                                                deck: JSON.stringify(item),
-                                                title: item["title"]
+                                                id: item["id"],
+                                                title: item["title"],
+                                                deck: JSON.stringify(item),                                                
+                                                updateTitle: (id, title) => this.props.updateTitle(id, title),
+                                                addCardToDeck: (id, card) => this.props.addCardToDeck(id, card)
                                             });
                                         }}
                                     />

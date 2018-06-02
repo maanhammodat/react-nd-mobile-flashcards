@@ -10,15 +10,25 @@ export default class DeckContainer extends Component {
 
         this.updateTitle = this.updateTitle.bind(this);
         this.refreshMe = this.refreshMe.bind(this);
-        
+
     }
     //TODO: try moving navigationOptions to Deck
     //Then edit title through callback function on goback:
     //https://stackoverflow.com/questions/44223727/react-navigation-goback-and-update-parent-state
+
+    // static navigationProps = {
+    //     header: ({ state }) => {
+    //         return {
+    //             title: "HEYYYY"
+    //         }
+    //     }
+    // }
     static navigationOptions = ({ navigation }) => {
-        console.log('DeckContainer: navopts');
+
         const params = navigation.state.params || {};
         const title = params.title;
+
+        console.log('DeckContainer: navopts');
 
         return {
             headerTitle: title,
@@ -38,42 +48,49 @@ export default class DeckContainer extends Component {
         stale: 1
     }
 
-    updateTitle(title){
-        this.props.navigation.setParams({title});
+    componentDidMount() {
+        // this.props.navigation.setParams({
+        //     title: "HEYY"
+        // });
+        console.log('DeckCOntainer: componentDidMount');
+    }
+
+    updateTitle(title) {
+        this.props.navigation.setParams({ title });
         console.log('updateTitle called');
     }
-    refreshMe(){
+    refreshMe() {
         this.setState({
             stale: 2
         })
-        console.log('refreshMe',this.state.stale);
+        console.log('refreshMe', this.state.stale);
     }
 
-    render(){
+    render() {
         console.log('DeckContainer: render', this.state.stale);
-        return(
+        return (
             <AppContext.Consumer>
-                {context => 
+                {context =>
                     <React.Fragment>
-                        <Deck 
-                        decks={context.decks}
-                        navigation={this.props.navigation}
-                        updateTitle={this.updateTitle}
+                        <Deck
+                            decks={context.decks}
+                            navigation={this.props.navigation}
+                            updateTitle={this.updateTitle}
                         />
                         <Button
-                        raised
-                        title='Refresh'
-                        onPress={() => {
-                            this.refreshMe();
-                        }}
+                            raised
+                            title='Refresh'
+                            onPress={() => {
+                                this.refreshMe();
+                            }}
                         />
                     </React.Fragment>
                 }
             </AppContext.Consumer>
-        )    
+        )
     }
 }
-    
+
 
 class Deck extends Component {
 
@@ -84,22 +101,22 @@ class Deck extends Component {
     }
 
     updateTitle(title) {
-      //this.doSomething();
-      console.log('Deck onGoBack!');
-      this.props.updateTitle(title);
+        //this.doSomething();
+        console.log('Deck onGoBack!');
+        this.props.updateTitle(title);
     }
-    
+
     render() {
 
         let deck = this.state.deck;
         deck = deck ? JSON.parse(deck) : {};
-        
+
         const questions = deck.questions;
         const title = deck.title;
         const id = deck.id;
 
-        console.log('Deck: title',title);
-        
+        console.log('Deck: title', title);
+
         return (
             <View style={{ flex: 1 }}>
                 <FlatList
@@ -142,7 +159,7 @@ class Deck extends Component {
                     <Button
                         raised
                         title='Edit Deck'
-                        onPress={() => { 
+                        onPress={() => {
                             this.props.navigation.navigate('EditDeck', {
                                 id,
                                 title,

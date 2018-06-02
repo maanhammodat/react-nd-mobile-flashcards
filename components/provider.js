@@ -76,7 +76,7 @@ export class AppProvider extends React.Component {
 
       // only needed if used in a callback
       this.addDeck = this.addDeck.bind(this);
-      this.editDeckTitle = this.editDeckTitle.bind(this);
+      this.updateTitle = this.updateTitle.bind(this);
       this.addCardToDeck = this.addCardToDeck.bind(this);
   }
   
@@ -138,22 +138,22 @@ export class AppProvider extends React.Component {
     
   }
 
-  editDeckTitle(id, title) {
+  updateTitle(id, title) {
 
     let decks = this.state.decks;
     let _this = this;
     
     return new Promise(function (resolve, reject) {
 
-      console.log('editDeckTitle: called..');
+      console.log('updateTitle: called..');
       decks = decks.map((deck) => deck.id === id ? Object.assign({}, deck, {title}) : deck );
-      console.log('editDeckTitle: deck title edited..');
+      console.log('updateTitle: deck title edited..');
       
       store.save('decks', decks)
       .then(() => store.get('decks'))
       .then(decks => {
         _this.setState({ decks });
-        console.log('editDeckTitle: decks updated in AS and state!');
+        console.log('updateTitle: decks updated in AS and state!');
         resolve();
       });
     });
@@ -178,8 +178,41 @@ export class AppProvider extends React.Component {
       .then(() => store.get('decks'))
       .then(decks => {
         _this.setState({ decks });
+        const updatedDeck = decks.filter(deck => deck.id === id);
         console.log('addCardToDeck: decks updated in AS and state!');
-        resolve();
+        resolve(JSON.stringify(updatedDeck[0]));
+      });
+
+    });
+
+  }
+
+  editCard(id, card) {
+
+    let decks = this.state.decks;
+    let _this = this;
+    const cardId = card.id
+
+    return new Promise(function (resolve, reject) {
+
+      console.log('editCard: called..');
+      decks = decks.map((deck) => {
+        //get questions by deck.id
+        // deck.id === id && (
+        //   Object.assign({}, deck, {title})
+        //   deck["questions"].find(card => card.id === cardId)
+        // );
+        return deck;
+      });
+      console.log('editCard: deck card created..');
+
+      store.save('decks', decks)
+      .then(() => store.get('decks'))
+      .then(decks => {
+        _this.setState({ decks });
+        const updatedDeck = decks.filter(deck => deck.id === id);
+        console.log('editCard: decks updated in AS and state!');
+        resolve(JSON.stringify(updatedDeck[0]));
       });
 
     });
@@ -191,7 +224,7 @@ export class AppProvider extends React.Component {
       <AppContext.Provider value={{
         decks: this.state.decks,
         addDeck: this.addDeck,
-        editDeckTitle: this.editDeckTitle,
+        updateTitle: this.updateTitle,
         addCardToDeck: this.addCardToDeck
       }}>
         {this.props.children}
