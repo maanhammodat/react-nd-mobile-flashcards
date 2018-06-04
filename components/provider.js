@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import store from 'react-native-simple-store';
 import { Alert } from 'react-native';
-import { NavigationActions, withNavigation } from 'react-navigation';
+import { withNavigation } from 'react-navigation';
 
 const base = [
   {
@@ -78,6 +78,9 @@ export class AppProvider extends React.Component {
       this.addDeck = this.addDeck.bind(this);
       this.updateTitle = this.updateTitle.bind(this);
       this.addCardToDeck = this.addCardToDeck.bind(this);
+      this.updateCard = this.updateCard.bind(this);
+      this.deleteDeck = this.deleteDeck.bind(this);
+      this.deleteCard = this.deleteCard.bind(this);
   }
   
   componentDidMount() {
@@ -116,12 +119,6 @@ export class AppProvider extends React.Component {
   addDeck(deck, key) {
     
     let _this = this;
-
-    const setParamsAction = NavigationActions.setParams({
-      params: { title: 'Hello' },
-      key: key,
-    });
-    this.props.navigation.dispatch(setParamsAction);
 
     return new Promise(function (resolve, reject) {
       console.log('addDeck: called..');
@@ -187,10 +184,10 @@ export class AppProvider extends React.Component {
 
   }
 
-  editCard(id, card) {
+  updateCard(id, card) {
 
     let decks = this.state.decks;
-    let _this = this;
+    const _this = this;
     const cardId = card.id
 
     return new Promise(function (resolve, reject) {
@@ -198,10 +195,9 @@ export class AppProvider extends React.Component {
       console.log('editCard: called..');
       decks = decks.map((deck) => {
         //get questions by deck.id
-        // deck.id === id && (
-        //   Object.assign({}, deck, {title})
-        //   deck["questions"].find(card => card.id === cardId)
-        // );
+        deck.id === id && (
+          Object.assign(deck["questions"].find(card => card.id === cardId), card)
+        );
         return deck;
       });
       console.log('editCard: deck card created..');
@@ -219,13 +215,72 @@ export class AppProvider extends React.Component {
 
   }
 
+  deleteDeck(id){
+
+    let decks = this.state.decks;
+    const _this = this;
+
+    return new Promise(function (resolve, reject) {
+
+      console.log('deleteDeck: called..');
+      decks = decks.filter((deck) => { 
+        return deck.id !== id;
+      });
+
+      store.save('decks', decks)
+      .then(() => store.get('decks'))
+      .then(decks => {
+        _this.setState({ decks });
+        console.log('deleteDeck: decks updated in AS and state!');
+        resolve();
+      });
+
+    });
+
+  }
+
+  deleteCard(id, cardId){
+    
+    let decks = this.state.decks;
+    const _this = this;
+
+    return new Promise(function (resolve, reject) {
+
+      console.log('deleteDeck: called..');
+      
+      decks = decks.map((deck) => {
+        if(deck.id === id){
+          const questions = deck["questions"].filter((question) => {
+            return question.id !== cardId;
+          });
+          deck["questions"] = questions;
+        }
+        return deck;
+      });
+
+      store.save('decks', decks)
+      .then(() => store.get('decks'))
+      .then(decks => {
+        _this.setState({ decks });
+        const updatedDeck = decks.filter(deck => deck.id === id);
+        console.log('deleteCard: decks updated in AS and state!');
+        resolve(JSON.stringify(updatedDeck[0]));
+      });
+
+    });
+
+  }
+
   render() {
     return (
       <AppContext.Provider value={{
         decks: this.state.decks,
         addDeck: this.addDeck,
         updateTitle: this.updateTitle,
-        addCardToDeck: this.addCardToDeck
+        deleteDeck: this.deleteDeck,
+        addCardToDeck: this.addCardToDeck,
+        updateCard: this.updateCard,
+        deleteCard: this.deleteCard
       }}>
         {this.props.children}
       </AppContext.Provider>

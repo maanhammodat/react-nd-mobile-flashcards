@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Modal } from 'react-native';
 import { Button, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
-import { AppContext } from './provider';
-import { NavigationActions } from 'react-navigation';
 import * as uuid from '../utils/uuid';
 
 export default class DeckContainer extends Component {
@@ -17,6 +15,8 @@ export default class DeckContainer extends Component {
 
         const params = navigation.state.params || {};
         const title = params.title;
+        const deleteDeck = params.deleteDeck;
+        const id = params.id;
 
         console.log('DeckContainer: navopts');
 
@@ -24,7 +24,14 @@ export default class DeckContainer extends Component {
             headerTitle: title,
             headerRight: (
                 <Button
-                    onPress={() => alert('This is a button!')}
+                    onPress={() => {
+                        deleteDeck(id)
+                        .then(() => {
+                            console.log('deleteDeck component callback');
+                            navigation.navigate('Home');
+                        });
+                     }                        
+                    }
                     title="Delete"
                     color="#fff"
                 />
@@ -36,10 +43,9 @@ export default class DeckContainer extends Component {
         id: this.props.navigation.state.params.id,
         title: this.props.navigation.state.params.title,
         deck: this.props.navigation.state.params.deck,
-        modals: { updateTitle: false, addCard: false },
-        //TODO: newCard: {question: '', answer: ''}
-        question: '',
-        answer: ''
+        modals: { editTitle: false, addCard: false, editCard: false },
+        currentCard: { question: '', answer: '', id: '' },
+        newCard: { question: '', answer: '' }        
     }
 
     setModalVisible(modal, visible) {
@@ -55,21 +61,17 @@ export default class DeckContainer extends Component {
         this.props.navigation.state.params.updateTitle(id, title)
         .then(() => {
             this.props.navigation.setParams({ title });
-            this.setModalVisible('updateTitle', false);
+            this.setModalVisible('editTitle', false);
         });
     }
     addCardToDeck() {
 
-        const question = this.state.question;
-        const answer = this.state.answer;
+        const card = this.state.newCard;
 
-        if (!question || !answer) return;
+        if (card.question === '' || card.answer === '') return;
 
         const id = this.state.id;
 
-        const card = {}
-        card.question = question;
-        card.answer = answer;
         card.id = uuid.generate();
         console.log('addCardToDeck:',card);
         
@@ -81,13 +83,46 @@ export default class DeckContainer extends Component {
             this.setModalVisible('addCard', false);
         });
     }
+    updateCard() {
+
+        const card = this.state.currentCard;
+        console.log('updateCard: ',card);
+
+        if (card.question === '' || card.answer === '' || card.id === '') return;
+        
+        const id = this.state.id;
+        
+        console.log('updateCard:',card);
+        
+        this.props.navigation.state.params.updateCard(id, card)
+        .then((deck) => {
+            this.setState({ deck });            
+            this.props.navigation.setParams({ deck });
+            console.log('updateCard CB: state: ',this.state.deck);
+            this.setModalVisible('editCard', false);
+        });
+    }
+    deleteCard(cardId){
+        console.log('deleteCard');
+        
+        const id = this.state.id;
+        
+        console.log('deleteCard:', cardId);
+        
+        this.props.navigation.state.params.deleteCard(id, cardId)
+        .then((deck) => {
+            this.setState({ deck });            
+            this.props.navigation.setParams({ deck });
+            console.log('deleteCard CB: state: ',this.state.deck);
+        });
+    }
 
     render() {
 
         const deck = this.state.deck ? JSON.parse(this.state.deck) : {};
         const questions = deck.questions;
 
-        console.log('DeckContainer rendered, state:',this.state.deck);
+        //console.log('DeckContainer rendered, state:',this.state.newCard);
 
         return (
             <View style={{ flex: 1 }}>
@@ -101,10 +136,23 @@ export default class DeckContainer extends Component {
                                 <Button
                                     raised
                                     title='Edit'
+                                    onPress={() => {
+                                        const currentCard = { ...this.state.currentCard }
+                                        currentCard.question = item.question;
+                                        currentCard.answer = item.answer;
+                                        currentCard.id = item.id;
+                                        this.setState({ currentCard });
+                                        
+                                        console.log('EditCard button, currentCard',this.state.currentCard);
+                                        this.setModalVisible('editCard', true);
+                                    }}
                                 />
                                 <Button
                                     raised
                                     title='Delete'
+                                    onPress={() => {
+                                        this.deleteCard(item.id);
+                                    }}
                                 />
                             </View>
                         )
@@ -123,24 +171,31 @@ export default class DeckContainer extends Component {
                         raised
                         title='Start Quiz'
                         onPress={() => {
-                            this.setState({ addDeck: true })
+                            this.props.navigation.navigate('Quiz', {
+                                deck: this.state.deck,
+                                id: this.state.id,
+                                title: this.state.title,                                
+                            });
                         }}
                     />
                     <Button
                         raised
                         title='Edit Deck'
                         onPress={() => {
-                            this.setModalVisible('updateTitle', true);
+                            this.setModalVisible('editTitle', true);
                         }}
                     />
                 </View>
-
+                
+                {
+                //Edit Title
+                }
                 <Modal
                     animationType="slide"
                     transparent={false}
-                    visible={this.state.modals.updateTitle}
+                    visible={this.state.modals.editTitle}
                     onRequestClose={() => {
-                        this.setModalVisible('updateTitle', false);
+                        this.setModalVisible('editTitle', false);
                     }}
                 >
 
@@ -166,13 +221,16 @@ export default class DeckContainer extends Component {
                             backgroundColor={'#cb2431'}
                             title='CANCEL'
                             onPress={() => {
-                                this.setModalVisible('updateTitle', false);
+                                this.setModalVisible('editTitle', false);
                             }}
                         />
                     </View>
 
                 </Modal>
 
+                {
+                //Add Card
+                }
                 <Modal
                     animationType="slide"
                     transparent={false}
@@ -185,11 +243,23 @@ export default class DeckContainer extends Component {
                     <Text h4 style={{ marginLeft: 20 }}>Add Card</Text>
                     <FormLabel>Question</FormLabel>
                     <FormInput
-                        onChangeText={question => this.setState(() => ({ question }))}
+                        onChangeText={
+                            (question) => {
+                                const newCard = { ...this.state.newCard }
+                                newCard.question = question;
+                                this.setState({ newCard });
+                            }
+                        }
                     />
                     <FormLabel>Answer</FormLabel>
                     <FormInput
-                        onChangeText={answer => this.setState(() => ({ answer }))}
+                        onChangeText={
+                            (answer) => {
+                                const newCard = { ...this.state.newCard }
+                                newCard.answer = answer;
+                                this.setState({ newCard });
+                            }
+                        }
                     />
                     <FormValidationMessage>Error message</FormValidationMessage>
 
@@ -209,6 +279,64 @@ export default class DeckContainer extends Component {
                             title='CANCEL'
                             onPress={() => {
                                 this.setModalVisible('addCard', false);
+                            }}
+                        />
+                    </View>
+
+                </Modal>
+
+                {
+                //Edit Card
+                }            
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={this.state.modals.editCard}
+                    onRequestClose={() => {
+                        this.setModalVisible('editCard', false);
+                    }}
+                >
+
+                    <Text h4 style={{ marginLeft: 20 }}>Edit Card</Text>
+                    <FormLabel>Question</FormLabel>
+                    <FormInput
+                        onChangeText={
+                            (question) => {
+                                const currentCard = { ...this.state.currentCard }
+                                currentCard.question = question;
+                                this.setState({ currentCard });
+                            }    
+                        }
+                        value={this.state.currentCard.question}
+                    />
+                    <FormLabel>Answer</FormLabel>
+                    <FormInput
+                        onChangeText={
+                            (answer) => {
+                                const currentCard = { ...this.state.currentCard }
+                                currentCard.answer = answer;
+                                this.setState({ currentCard });
+                            }
+                        }
+                        value={this.state.currentCard.answer}
+                    />
+                    <FormValidationMessage>Error message</FormValidationMessage>
+
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Button
+                            raised
+                            title='SUBMIT'
+                            onPress={() => {
+                                this.updateCard();
+                            }}
+                        />
+                        <Button
+                            raised
+                            icon={{ name: 'ban', type: 'font-awesome' }}
+                            backgroundColor={'#cb2431'}
+                            title='CANCEL'
+                            onPress={() => {
+                                this.setModalVisible('editCard', false);
                             }}
                         />
                     </View>

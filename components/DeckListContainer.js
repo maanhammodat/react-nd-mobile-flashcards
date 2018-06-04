@@ -12,8 +12,11 @@ export default class DeckListContainer extends Component {
                         navigation={this.props.navigation}
                         decks={context.decks}
                         addDeck={context.addDeck}
-                        updateTitle={context.updateTitle} 
+                        updateTitle={context.updateTitle}
+                        deleteDeck={context.deleteDeck}
                         addCardToDeck={context.addCardToDeck}
+                        updateCard={context.updateCard}                      
+                        deleteCard={context.deleteCard}
                     />
                 }
             </AppContext.Consumer>
@@ -42,7 +45,7 @@ class DeckList extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <Text>Flash Cards v0.18: Deck List</Text>
+                <Text>Flash Cards v0.20: Deck List</Text>
                 {/* <Tile
                     imageSrc={require('../images/brain.png')}
                     title="Flash Cards v0.17"
@@ -58,8 +61,9 @@ class DeckList extends Component {
                     containerStyle={{ height: 150 }}
                 /> */}
 
-                {(Object.keys(decks).length > 0) && (
+                
                     <View style={{ flex: 1 }}>
+                        {(Object.keys(decks).length > 0) && (
                         <List>
                             {
                                 decks.map((item, i) => (
@@ -73,13 +77,17 @@ class DeckList extends Component {
                                                 title: item["title"],
                                                 deck: JSON.stringify(item),                                                
                                                 updateTitle: (id, title) => this.props.updateTitle(id, title),
-                                                addCardToDeck: (id, card) => this.props.addCardToDeck(id, card)
+                                                addCardToDeck: (id, card) => this.props.addCardToDeck(id, card),
+                                                updateCard: (id, title) => this.props.updateCard(id, title),
+                                                deleteDeck: (id) => this.props.deleteDeck(id),
+                                                deleteCard: (id, cardId) => this.props.deleteCard(id, cardId)
                                             });
                                         }}
                                     />
                                 ))
                             }
                         </List>
+                        )}
                         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
                             <Button
                                 raised
@@ -91,7 +99,7 @@ class DeckList extends Component {
                             />
                         </View>
                     </View>
-                )}
+                
 
             </View>
 

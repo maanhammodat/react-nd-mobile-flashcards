@@ -7,10 +7,8 @@ import DeckContainer from './components/DeckContainer';
 import AddDeck from './components/AddDeck';
 import EditDeck from './components/EditDeck';
 import AddCard from './components/AddCard';
+import Quiz from './components/Quiz';
 import { createStackNavigator } from 'react-navigation';
-
-
-
 
 const RootStack = createStackNavigator(
   {
@@ -18,7 +16,8 @@ const RootStack = createStackNavigator(
     AddDeck: AddDeck,
     Deck: DeckContainer,
     EditDeck: EditDeck,
-    AddCard: AddCard
+    AddCard: AddCard,
+    Quiz: Quiz
   },
   {
     initialRouteName: 'Home',
