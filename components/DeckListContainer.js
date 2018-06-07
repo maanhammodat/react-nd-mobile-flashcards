@@ -44,11 +44,10 @@ class DeckList extends Component {
         const { decks } = this.props;
 
         return (
-            <View style={{ flex: 1 }}>
-                <Text>Flash Cards v0.20: Deck List</Text>
-                {/* <Tile
+            <View style={{ flex: 1 }}>                
+                <Tile
                     imageSrc={require('../images/brain.png')}
-                    title="Flash Cards v0.17"
+                    title="Flash Cards v0.21"
                     featured
                     titleStyle={{ 
                         marginTop: 110, 
@@ -59,7 +58,7 @@ class DeckList extends Component {
                     }}
                     imageContainerStyle={{ height: 150 }}
                     containerStyle={{ height: 150 }}
-                /> */}
+                />
 
                 
                     <View style={{ flex: 1 }}>
