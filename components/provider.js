@@ -95,7 +95,7 @@ export class AppProvider extends React.Component {
     //store.delete('decks');
 
     store.get('decks').then((decks) => {
-
+        
         if(decks){
           console.log('Decks found in AS');
           this.setState({ decks });

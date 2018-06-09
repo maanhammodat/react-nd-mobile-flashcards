@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, StatusBar } from 'react-native';
 import { Constants } from 'expo';
 import { AppProvider } from './components/provider';
 import DeckListContainer from './components/DeckListContainer';
@@ -17,6 +17,7 @@ import { setLocalNotification } from './utils/notification';
  * -Validation and limits to title and question / answer length
  * -CSS / Layout
  */
+
 class LogoTitle extends React.Component {
   render() {
     return (
@@ -56,9 +57,11 @@ const RootStack = createStackNavigator(
 );
 
 export default class App extends React.Component {
+  
   componentDidMount(){
     setLocalNotification();
   }
+
   render() {
     return (
       <AppProvider>
