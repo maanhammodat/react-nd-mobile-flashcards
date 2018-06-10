@@ -1,8 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
 import store from 'react-native-simple-store';
-import { Alert } from 'react-native';
-import { withNavigation } from 'react-navigation';
 
 const base = [
   {

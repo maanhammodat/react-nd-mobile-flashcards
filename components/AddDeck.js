@@ -30,12 +30,12 @@ class AddDeckForm extends Component {
         const title = this.state.deckTitle;
         
         if (!title){
-            this.invalidTitle('null');
+            this.invalidTitle('no title');
             return;
         }
 
         if (title.length > 26) {
-            this.invalidTitle('length');
+            this.invalidTitle('title too long');
             return;
         }
         
@@ -52,8 +52,8 @@ class AddDeckForm extends Component {
     invalidTitle(error){
         console.log('invalidTitle', error);
         const errorMessage = 
-            (error === 'null') ? 'Please enter a title' : 
-            (error === 'length') ? 'The name you entered is too long, please shorten' : '';
+            (error === 'no title') ? 'Please enter a title' : 
+            (error === 'title too long') ? 'The name you entered is too long, please shorten' : '';
         
         console.log('invalidTitle', errorMessage);
         this.setState({ errorMessage });
@@ -63,14 +63,14 @@ class AddDeckForm extends Component {
         const { errorMessage } = this.state;
         
         const validation = errorMessage ? (
-            <FormValidationMessage>
+            <FormValidationMessage containerStyle={{ marginBottom: 10 }}>
                 {errorMessage}
             </FormValidationMessage>
         ) : null;
 
         console.log('errorMessage', errorMessage);
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10 }}>
                     <Icon
                         name='plus-box-outline'
@@ -79,9 +79,10 @@ class AddDeckForm extends Component {
                     />
                     <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667' }}>ADD A DECK</Text>
                 </View>
-                <FormLabel>Name</FormLabel>
+                <FormLabel labelStyle={{ color: '#901D7E' }}>Name</FormLabel>
                 <FormInput
-                onChangeText={deckTitle => this.setState(() => ({ deckTitle }))}
+                    placeholder='Tap here to enter a title for the new deck'
+                    onChangeText={deckTitle => this.setState(() => ({ deckTitle }))}
                 />
                 {validation}
 
@@ -91,6 +92,7 @@ class AddDeckForm extends Component {
                 }}>
                     <Button
                         raised
+                        backgroundColor={'#59B324'}
                         icon={{ name: 'check', type: 'font-awesome' }}
                         title='SUBMIT'
                         onPress={() => {

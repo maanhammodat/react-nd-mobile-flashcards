@@ -102,7 +102,7 @@ class DeckList extends Component {
                         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
                             <Button
                                 raised
-                                backgroundColor={'#901D7E'}
+                                backgroundColor={'#291CA9'}
                                 icon={{ name: 'plus', type: 'font-awesome' }}
                                 title='Add Deck'
                                 onPress={() => {

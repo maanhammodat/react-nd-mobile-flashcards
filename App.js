@@ -16,6 +16,11 @@ import { setLocalNotification } from './utils/notification';
  * -Move LogoTitle into component
  * -Validation and limits to title and question / answer length
  * -CSS / Layout
+ * -Animation for DeckListContainer
+ * -Lock orientation
+ * -Readme -> test on Android only
+ * -Text for no cards / no decks
+ * -Scrollview infinite
  */
 
 class LogoTitle extends React.Component {
@@ -23,8 +28,8 @@ class LogoTitle extends React.Component {
     return (
       <View style={{ display: 'flex', flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
         <Image
-        source={require('./images/brain2.png')}
-        style={{ width: 30, height: 30, marginLeft: 5 }}
+          source={require('./images/brain2.png')}
+          style={{ width: 30, height: 30, marginLeft: 5 }}
         />
         <Text style={{ color: '#fff', marginLeft: 5, marginTop:2, fontSize: 18, fontWeight: '900' }}>MOBILE FLASHCARDS</Text>
       </View>
@@ -70,22 +75,6 @@ export default class App extends React.Component {
     )
   }
 }
-/**
- * TODO
- * 
- * Deck:
- *  -Edit Deck Title
- *  -Delete Deck
- * 
- * Card:
- *  -Add Card to Deck
- *  -Edit Card
- *  -Delete Card
- * 
- * Quiz:
- *  -Start Quiz
- * 
- */
 
 // export default class App extends React.Component {
 //   render() {
