@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Modal } from 'react-native';
-import { Button, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import { Button, FormLabel, FormInput, FormValidationMessage, Icon } from 'react-native-elements';
 import { clearLocalNotification, setLocalNotification} from '../utils/notification';
 
 export default class Quiz extends Component {
@@ -13,7 +13,20 @@ export default class Quiz extends Component {
         console.log('Quiz: navopts');
 
         return {
-            headerTitle: `Quiz: ${title}`
+            headerTitle: `Quiz: ${title}`,
+            headerRight: (
+                <Icon
+                    name='x'
+                    type='foundation'
+                    color='#fff'
+                    containerStyle={{ marginRight: 20 }}
+                    underlayColor={'transparent'}
+                    onPress={() => {
+                        navigation.goBack();
+                     }                        
+                    }
+                />
+            ),
         }
     };
 
@@ -72,51 +85,44 @@ export default class Quiz extends Component {
                 {!completed && (
 
                 <React.Fragment>
-                <Text>
-                    {`Number: ${currentQuestion + 1} / ${totalQuestions}\n`}
-                    {`Score:  ${score} / ${totalQuestions}\n`}
-                    {`Q: ${questions[currentQuestion].question}\n`}
-                    {flipped && `A: ${questions[currentQuestion].answer}`}
-                </Text>
+                    <Text>
+                        {`Number: ${currentQuestion + 1} / ${totalQuestions}\n`}
+                        {`Score:  ${score} / ${totalQuestions}\n`}
+                        {`Q: ${questions[currentQuestion].question}\n`}
+                        {flipped && `A: ${questions[currentQuestion].answer}`}
+                    </Text>
 
-                <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
-                    {!flipped && (
-                        <React.Fragment>
-                        <Button
-                            raised
-                            title='View Answer'
-                            onPress={() => {
-                                this.setState(() => ({ flipped: true }))
-                            }}
-                        />
-                        <Button
-                            raised
-                            title='Back to Deck'
-                            onPress={() => {
-                                this.props.navigation.goBack();
-                            }}
-                        />
-                        </React.Fragment>
-                    )}
-                    {flipped && (
-                        <React.Fragment>
-                        <Button
-                            raised
-                            title='Correct'
-                            onPress={() => {
-                                this.handleAnswer('correct', currentQuestion, totalQuestions)
-                            }}
-                        />
-                        <Button
-                            raised
-                            title='Incorrect'
-                            onPress={() => {
-                                this.handleAnswer('incorrect', currentQuestion, totalQuestions)
-                            }}
-                        />
-                        </React.Fragment>
-                    )}
-                </View>
+                    <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+                        {!flipped && (
+                            <Button
+                                raised
+                                backgroundColor={'#05A071'}
+                                icon={{ name: 'magnifying-glass', type: 'entypo' }}
+                                title='View Answer'
+                                onPress={() => {
+                                    this.setState(() => ({ flipped: true }))
+                                }}
+                            />
+                        )}
+                        {flipped && (
+                            <React.Fragment>
+                            <Button
+                                raised
+                                title='Correct'
+                                onPress={() => {
+                                    this.handleAnswer('correct', currentQuestion, totalQuestions)
+                                }}
+                            />
+                            <Button
+                                raised
+                                title='Incorrect'
+                                onPress={() => {
+                                    this.handleAnswer('incorrect', currentQuestion, totalQuestions)
+                                }}
+                            />
+                            </React.Fragment>
+                        )}
+                    </View>
                 </React.Fragment>
 
                 )}

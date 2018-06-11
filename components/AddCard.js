@@ -57,7 +57,7 @@ class AddCardForm extends Component {
                 <FormInput
                     onChangeText={question => this.setState(() => ({ question }))}
                 />
-                <FormLabel>Answer</FormLabel>
+                <FormLabel labelStyle={{ color: '#901D7E' }}>Answer</FormLabel>
                 <FormInput
                     onChangeText={answer => this.setState(() => ({ answer }))}
                 />

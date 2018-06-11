@@ -69,7 +69,7 @@ class DeckList extends Component {
                             color='#667'
                             // containerStyle={{ backgroundColor:  }}
                         />
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667' }}>DECKS</Text>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>DECKS</Text>
                     </View>
                     <View style={{ flex: 1, marginTop: -10 }}>
                         {(Object.keys(decks).length > 0) && (

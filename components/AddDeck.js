@@ -77,7 +77,7 @@ class AddDeckForm extends Component {
                         type='material-community'
                         color='#667'
                     />
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667' }}>ADD A DECK</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>ADD A DECK</Text>
                 </View>
                 <FormLabel labelStyle={{ color: '#901D7E' }}>Name</FormLabel>
                 <FormInput
@@ -86,10 +86,7 @@ class AddDeckForm extends Component {
                 />
                 {validation}
 
-                <View style={{
-                flexDirection: 'row', 
-                justifyContent: 'space-between'
-                }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Button
                         raised
                         backgroundColor={'#59B324'}

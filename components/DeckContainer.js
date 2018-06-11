@@ -39,19 +39,6 @@ export default class DeckContainer extends Component {
                      }                        
                     }
                 />
-
-                // <Button
-                //     onPress={() => {
-                //         deleteDeck(id)
-                //         .then(() => {
-                //             console.log('deleteDeck component callback');
-                //             navigation.navigate('Home');
-                //         });
-                //      }                        
-                //     }
-                //     title="Delete"
-                //     color="#fff"
-                // />
             ),
         }
     };
@@ -71,6 +58,7 @@ export default class DeckContainer extends Component {
         modals[modal] = visible;
         this.setState({ modals });
     }
+    
     updateTitle() {
         const { id, title } = this.state;
 
@@ -83,17 +71,25 @@ export default class DeckContainer extends Component {
             return;
         }
 
+        this.clearFormError('editTitle');
+
         this.props.navigation.state.params.updateTitle(id, title)
         .then(() => {
             this.props.navigation.setParams({ title });
             this.setModalVisible('editTitle', false);
         });
     }
+
     addCardToDeck() {
 
         const card = this.state.newCard;
 
-        if (card.question === '' || card.answer === '') return;
+        if (card.question === '' || card.answer === ''){
+            this.handleFormError('addCard', 'no question or answer');
+            return;
+        }
+
+        this.clearFormError('addCard');
 
         const id = this.state.id;
 
@@ -102,18 +98,23 @@ export default class DeckContainer extends Component {
         
         this.props.navigation.state.params.addCardToDeck(id, card)
         .then((deck) => {
-            this.setState({ deck });            
+            this.setState({ deck });
             this.props.navigation.setParams({ deck });
             console.log('addCardToDeck CB: state: ',this.state.deck);
             this.setModalVisible('addCard', false);
         });
     }
-    updateCard() {
+
+    updateCard() {        
+        console.log('updateCard()');
 
         const card = this.state.currentCard;
         console.log('updateCard: ',card);
 
-        if (card.question === '' || card.answer === '' || card.id === '') return;
+        if (card.question === '' || card.answer === ''){
+            this.handleFormError('editCard', 'no question or answer');
+            return;
+        }
         
         const id = this.state.id;
         
@@ -127,6 +128,7 @@ export default class DeckContainer extends Component {
             this.setModalVisible('editCard', false);
         });
     }
+
     deleteCard(cardId){
         console.log('deleteCard');
         
@@ -141,6 +143,7 @@ export default class DeckContainer extends Component {
             console.log('deleteCard CB: state: ',this.state.deck);
         });
     }
+
     handleFormError(modal, error){
         const message = 
             (error === 'no title') ? 'Please enter a title' : 
@@ -156,6 +159,12 @@ export default class DeckContainer extends Component {
 
         console.log('handleFormError', message, modal, errorMessages[modal]);
         console.log('handleFormError', this.state.errorMessages);
+    }
+
+    clearFormError(modal){
+        const errorMessages = { ...this.state.errorMessages }
+        errorMessages[modal] = '';
+        this.setState({ errorMessages });
     }
 
     render() {
@@ -180,7 +189,7 @@ export default class DeckContainer extends Component {
                         color='#667'
                     // containerStyle={{ backgroundColor:  }}
                     />
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667' }}>CARDS</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>CARDS</Text>
                 </View>
                 <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
                 </View>
@@ -210,6 +219,7 @@ export default class DeckContainer extends Component {
                                         size={18}
                                         underlayColor={'transparent'}
                                         onPress={() => {
+                                            this.clearFormError('editCard');
                                             const currentCard = { ...this.state.currentCard }
                                             currentCard.question = item.question;
                                             currentCard.answer = item.answer;
@@ -244,7 +254,8 @@ export default class DeckContainer extends Component {
                     <Button
                         raised
                         backgroundColor={'#291CA9'}
-                        containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
+                        buttonStyle={{ height: 43 }}
+                        containerViewStyle={{ marginLeft: 0, marginRight: 0 }}                        
                         icon={{ name: 'plus', type: 'font-awesome' }}
                         title='Add Card'
                         onPress={() => {
@@ -254,6 +265,7 @@ export default class DeckContainer extends Component {
                     <Button
                         raised
                         backgroundColor={'#05A071'}
+                        buttonStyle={{ height: 43 }}
                         containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
                         icon={{ name: 'question', type: 'font-awesome' }}
                         title='Start Quiz'
@@ -268,6 +280,7 @@ export default class DeckContainer extends Component {
                     <Button
                         raised
                         backgroundColor={'#11549F'}
+                        buttonStyle={{ height: 43 }}
                         containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
                         icon={{ name: 'pencil', type: 'foundation' }}
                         title='Edit Deck'
@@ -289,21 +302,33 @@ export default class DeckContainer extends Component {
                     }}
                 >
 
-                    <Text h4 style={{ marginLeft: 20 }}>Edit Deck Title</Text>
-                    <FormLabel>Title</FormLabel>
+                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10 }}>
+                        <Icon
+                            name='pencil'
+                            type='foundation'
+                            color='#667'
+                        />
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>EDIT DECK</Text>
+                    </View>
+                    <FormLabel labelStyle={{ color: '#901D7E' }}>Name</FormLabel>
                     <FormInput
+                        placeholder='Tap here to edit the title for the new deck'
                         onChangeText={title => this.setState(() => ({ title }))}
                         value={this.state.title}
                     />
-                    {errorMessages.editTitle !== '' &&(
-                        <FormValidationMessage>{errorMessages.editTitle}</FormValidationMessage>
+                    {errorMessages.editTitle !== '' && (
+                        <FormValidationMessage containerStyle={{ marginBottom: 10 }}>
+                            {errorMessages.editTitle}
+                        </FormValidationMessage>
                         )
                     }
                     
 
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Button
                             raised
+                            backgroundColor={'#59B324'}
+                            icon={{ name: 'check', type: 'font-awesome' }}
                             title='SUBMIT'
                             onPress={() => {
                                 this.updateTitle();
@@ -312,8 +337,8 @@ export default class DeckContainer extends Component {
                         <Button
                             raised
                             icon={{ name: 'ban', type: 'font-awesome' }}
-                            backgroundColor={'#cb2431'}
-                            title='CANCEL'
+                            backgroundColor={ '#cb2431' }
+                            title='CANCEL'                             
                             onPress={() => {
                                 this.setModalVisible('editTitle', false);
                             }}
@@ -334,8 +359,15 @@ export default class DeckContainer extends Component {
                     }}
                 >
 
-                    <Text h4 style={{ marginLeft: 20 }}>Add Card</Text>
-                    <FormLabel>Question</FormLabel>
+                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10 }}>
+                        <Icon
+                            name='plus'
+                            type='font-awesome'
+                            color='#667'
+                        />
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>ADD CARD</Text>
+                    </View>
+                    <FormLabel labelStyle={{ color: '#901D7E' }}>Question</FormLabel>
                     <FormInput
                         onChangeText={
                             (question) => {
@@ -345,7 +377,7 @@ export default class DeckContainer extends Component {
                             }
                         }
                     />
-                    <FormLabel>Answer</FormLabel>
+                    <FormLabel labelStyle={{ color: '#901D7E' }}>Answer</FormLabel>
                     <FormInput
                         onChangeText={
                             (answer) => {
@@ -355,22 +387,28 @@ export default class DeckContainer extends Component {
                             }
                         }
                     />
-                    <FormValidationMessage>Error message</FormValidationMessage>
+                    {errorMessages.addCard !== '' && (
+                        <FormValidationMessage containerStyle={{ marginBottom: 10 }}>
+                            {errorMessages.addCard}
+                        </FormValidationMessage>
+                        )
+                    }
 
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Button
                             raised
+                            backgroundColor={'#59B324'}
+                            icon={{ name: 'check', type: 'font-awesome' }}
                             title='SUBMIT'
                             onPress={() => {
                                 this.addCardToDeck();
-                                //console.log('add new card: ', this.state.question, this.state.answer);
                             }}
                         />
                         <Button
                             raised
                             icon={{ name: 'ban', type: 'font-awesome' }}
-                            backgroundColor={'#cb2431'}
-                            title='CANCEL'
+                            backgroundColor={ '#cb2431' }
+                            title='CANCEL'                             
                             onPress={() => {
                                 this.setModalVisible('addCard', false);
                             }}
@@ -391,8 +429,15 @@ export default class DeckContainer extends Component {
                     }}
                 >
 
-                    <Text h4 style={{ marginLeft: 20 }}>Edit Card</Text>
-                    <FormLabel>Question</FormLabel>
+                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10 }}>
+                        <Icon
+                            name='pencil'
+                            type='foundation'
+                            color='#667'
+                        />
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>ADD CARD</Text>
+                    </View>
+                    <FormLabel labelStyle={{ color: '#901D7E' }}>Question</FormLabel>
                     <FormInput
                         onChangeText={
                             (question) => {
@@ -403,7 +448,7 @@ export default class DeckContainer extends Component {
                         }
                         value={this.state.currentCard.question}
                     />
-                    <FormLabel>Answer</FormLabel>
+                    <FormLabel labelStyle={{ color: '#901D7E' }}>Answer</FormLabel>
                     <FormInput
                         onChangeText={
                             (answer) => {
@@ -414,11 +459,19 @@ export default class DeckContainer extends Component {
                         }
                         value={this.state.currentCard.answer}
                     />
-                    <FormValidationMessage>Error message</FormValidationMessage>
+                    {errorMessages.editCard !== '' && (
+                        <FormValidationMessage containerStyle={{ marginBottom: 10 }}>
+                            {errorMessages.editCard}
+                        </FormValidationMessage>
+                        )
+                    }
+                    
 
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Button
                             raised
+                            backgroundColor={'#59B324'}
+                            icon={{ name: 'check', type: 'font-awesome' }}
                             title='SUBMIT'
                             onPress={() => {
                                 this.updateCard();
@@ -427,8 +480,8 @@ export default class DeckContainer extends Component {
                         <Button
                             raised
                             icon={{ name: 'ban', type: 'font-awesome' }}
-                            backgroundColor={'#cb2431'}
-                            title='CANCEL'
+                            backgroundColor={ '#cb2431' }
+                            title='CANCEL'                             
                             onPress={() => {
                                 this.setModalVisible('editCard', false);
                             }}
