@@ -15,19 +15,233 @@ const base = [
         id: 2,
         question: 'Where do you make Ajax requests in React?',
         answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 11,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 21,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 12,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 22,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 13,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 23,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 14,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 24,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 15,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 25,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 16,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 26,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 17,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 27,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 18,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 28,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 19,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 29,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 10,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 20,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 111,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 211,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 122,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 222,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
+      },
+      {
+        id: 1222,
+        question: 'What is React?',
+        answer: 'A library for managing user interfaces'
+      },
+      {
+        id: 23333,
+        question: 'Where do you make Ajax requests in React?',
+        answer: 'The componentDidMount lifecycle event'
       }
     ]
   },
   {
     id: 2,
     title: 'JavaScript',
-    questions: [
-      {
-        id: 3,
-        question: 'What is a closure?',
-        answer: 'The combination of a function and the lexical environment within which that function was declared.'
-      }
-    ]
+    questions: []
+  },
+  {
+    id: 23,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 21,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 20,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 24,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 25,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 26,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 27,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 28,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 29,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 200,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 211,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 222,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 233,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 244,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 255,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 266,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 277,
+    title: 'JavaScript',
+    questions: []
+  },
+  {
+    id: 288,
+    title: 'JavaScript',
+    questions: []
   }
 ]
 // const base = {
@@ -93,23 +307,23 @@ export class AppProvider extends React.Component {
 
     store.get('decks').then((decks) => {
         
-        if(decks){
-          console.log('Decks found in AS');
-          this.setState({ decks });
+      if(decks){
+        console.log('Decks found in AS');
+        this.setState({ decks });
 
-        }else{
+      }else{
 
-          store.save('decks', base).then(() => {
+        store.save('decks', base).then(() => {
 
-            store.get('decks').then((decks) => {
-              console.log('Decks not found in AS, had to push');
-              this.setState({ decks });
-            })
+          store.get('decks').then((decks) => {
+            console.log('Decks not found in AS, had to push');
+            this.setState({ decks });
+          })
 
-          });
-        }
+        });
+      }
 
-      });
+    });
 
   }
 

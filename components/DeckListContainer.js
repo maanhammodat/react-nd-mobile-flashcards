@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Image, Modal, Animated } from 'react-native';
-import { Tile, List, ListItem, Button, Text, Icon, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import { View, FlatList, Modal, Animated, TouchableOpacity } from 'react-native';
+import { List, ListItem, Button, Text, Icon, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import { AppContext } from './provider';
 import * as uuid from '../utils/uuid';
 
@@ -37,21 +37,27 @@ class DeckList extends Component {
         errorMessage: '',
         bounceValue: new Animated.Value(1)
     }
-
+    componentDidMount(){
+        this.shouldAnimate();
+    }
     componentDidUpdate(){
+        this.shouldAnimate();
+    }
+
+    shouldAnimate(){
         const { decks } = this.props;
         const { modal } = this.state;
-        if(Object.keys(decks).length === 0 && !modal){
+        if (Object.keys(decks).length === 0 && !modal) {
+            console.log('animate!');
             this.playAnimation();
         }
     }
-
     playAnimation(){
         console.log('playanimation');
         Animated.loop(
             Animated.sequence([
-              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 50}),
-              Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4})
+              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 15 }),
+              Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4 })
             ])
         ).start();
     }
@@ -113,91 +119,110 @@ class DeckList extends Component {
         return (
             
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
-                {/* <Tile
-                    imageSrc={require('../images/brain.png')}
-                    title="Flash Cards v0.21"
-                    featured
-                    titleStyle={{ 
-                        marginTop: 110, 
-                        fontSize: 40, 
-                        textShadowColor: 'rgba(0, 0, 0, 0.85)',
-                        textShadowOffset: {width: -1, height: 1},
-                        textShadowRadius: 15
-                    }}
-                    imageContainerStyle={{ height: 150 }}
-                    containerStyle={{ height: 150 }}
-                /> */}
                     
                 <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10, marginBottom: 10 }}>
                     <Icon
                         name='cards-variant'
                         type='material-community'
                         color='#667'
-                        // containerStyle={{ backgroundColor:  }}
                     />
                     <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>DECKS</Text>
                 </View>
+                <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
+                </View>
+                
+                {(Object.keys(decks).length > 0) && (
                 <View style={{ flex: 1 }}>
-                    {(Object.keys(decks).length > 0) && (
-                        <View style={{ flex: 1, marginTop: -20 }}>
-                            <List>
-                                {
-                                    decks.map((item, i) => (
-                                        <ListItem
-                                            key={i}
-                                            containerStyle={{ backgroundColor: '#fff' }}
-                                            titleStyle={{ color: '#901C7E', fontWeight: 'bold' }}
-                                            title={item["title"]}
-                                            badge={{ value: item["questions"].length, textStyle: { color: '#fff' }, containerStyle: { backgroundColor: '#901C7E' }}}
-                                            onPress={() => { 
-                                                this.props.navigation.navigate('Deck', {
-                                                    id: item["id"],
-                                                    title: item["title"],
-                                                    deck: JSON.stringify(item),                                                
-                                                    updateTitle: (id, title) => this.props.updateTitle(id, title),
-                                                    addCardToDeck: (id, card) => this.props.addCardToDeck(id, card),
-                                                    updateCard: (id, title) => this.props.updateCard(id, title),
-                                                    deleteDeck: (id) => this.props.deleteDeck(id),
-                                                    deleteCard: (id, cardId) => this.props.deleteCard(id, cardId)
-                                                });
-                                            }}
+                    <FlatList
+                        data={decks}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        renderItem={({ item }) => {
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={{
+                                        display: 'flex', flexDirection: 'row', flex: 1, justifyContent: 'space-between',
+                                        borderBottomColor: '#bbb', borderBottomWidth: 1,
+                                        paddingTop: 5, paddingBottom: 5
+                                    }}
+                                    onPress={() => {
+                                        this.props.navigation.navigate('Deck', {
+                                            id: item["id"],
+                                            title: item["title"],
+                                            deck: JSON.stringify(item),
+                                            updateTitle: (id, title) => this.props.updateTitle(id, title),
+                                            addCardToDeck: (id, card) => this.props.addCardToDeck(id, card),
+                                            updateCard: (id, title) => this.props.updateCard(id, title),
+                                            deleteDeck: (id) => this.props.deleteDeck(id),
+                                            deleteCard: (id, cardId) => this.props.deleteCard(id, cardId)
+                                        });
+                                    }}
+                                >
+
+                                    <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
+                                        
+                                        <Text style={{ color: '#901C7E', fontWeight: 'bold', marginLeft: 2, marginRight: 10, flexDirection: 'column', alignSelf: 'center', display: 'flex' }}>
+                                            {item["title"]}
+                                        </Text>
+
+                                    </View>
+
+                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
+
+                                        <View style={{ backgroundColor: '#901C7E', display: 'flex', flexDirection: 'column', borderRadius: 20, paddingHorizontal: 10 }}>
+                                            <Text style={{ color: '#fff', fontWeight: 'bold', 
+                                                textAlign: "left",
+                                                textAlignVertical: "center",
+                                                flex: 1
+                                            }}>
+                                                {item["questions"].length}
+                                            </Text>
+                                        </View>
+
+                                        <Icon
+                                            name='navigate-next'
+                                            color='#901C7E'
+                                            size={25}
                                         />
-                                    ))
-                                }
-                            </List>
-                        </View>
-                    )}
-                    {(Object.keys(decks).length === 0) && (
-                        <React.Fragment>
-                            <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
-                            </View>
+                                        
+                                    </View>
 
-                            <View style={{ display: 'flex', margin: 15, flex: 1 }}>
-                                <Text style={{ color: '#901C7E', marginBottom: 20, display: 'flex', flex: 6 }}>You haven't got any decks yet, tap "Add Deck" below to get create one!</Text>
-                                
-                                <Animated.View style={{ marginTop: bounceValue, bottom: 60, display: 'flex', flex: 1 }}>
-                                    <Icon
-                                        name='hand-o-down'
-                                        type='font-awesome'
-                                        color='#901C7E'
-                                        size={50}
-                                    />
-                                </Animated.View>
-                            </View>
+                                </TouchableOpacity>
 
-                        </React.Fragment>
-                    )}
-                    <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
-                        <Button
-                            raised
-                            backgroundColor={'#291CA9'}
-                            icon={{ name: 'plus', type: 'font-awesome' }}
-                            title='Add Deck'
-                            onPress={() => {
-                                this.setModalVisible(true);
-                            }}
-                        />
+                            )
+                        }}
+                        keyExtractor={item => item["id"].toString()}
+                    />
+
+
+                </View>
+                )}
+                    
+                
+                {(Object.keys(decks).length === 0) && (
+                    <View style={{ justifyContent: 'space-between', display: 'flex', margin: 15, flex: 1 }}>
+                        <Text style={{ color: '#901C7E' }}>You haven't got any decks yet, tap "Add Deck" below to get create one!</Text>
+
+                        <Animated.View style={{ bottom: this.state.bounceValue, display: 'flex' }}>
+                            <Icon
+                                name='hand-o-down'
+                                type='font-awesome'
+                                color='#901C7E'
+                                size={50}
+                            />
+                        </Animated.View>
                     </View>
+                )}
+                <View>
+                    <Button
+                        raised
+                        backgroundColor={'#291CA9'}
+                        icon={{ name: 'plus', type: 'font-awesome' }}
+                        title='Add Deck'
+                        onPress={() => {
+                            this.setModalVisible(true);
+                        }}
+                    />
                 </View>
 
                 <Modal

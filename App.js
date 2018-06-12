@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Image, Text, StatusBar } from 'react-native';
-import { Constants } from 'expo';
+import { View, Image, Text } from 'react-native';
 import { AppProvider } from './components/provider';
 import DeckListContainer from './components/DeckListContainer';
 import DeckContainer from './components/DeckContainer';
@@ -11,13 +10,12 @@ import Quiz from './components/Quiz';
 import { createStackNavigator } from 'react-navigation';
 import { setLocalNotification } from './utils/notification';
 
+Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT);
 /**
  * TODO:
  * -Move LogoTitle into component
  * -CSS / Layout
- * -Lock orientation
  * -Readme -> test on Android only
- * -Scrollview infinite (Change DeckListContainer List into FlatList)
  * -File structure tidy up
  */
 

@@ -58,8 +58,8 @@ export default class DeckContainer extends Component {
         console.log('playanimation');
         Animated.loop(
             Animated.sequence([
-              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 50}),
-              Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4})
+              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 15 }),
+              Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4 })
             ])
         ).start();
     }
@@ -235,16 +235,16 @@ export default class DeckContainer extends Component {
                             return (
                                 <View style={{ 
                                     display: 'flex', flexDirection: 'row', flex: 1,
-                                    borderBottomColor: '#bbb', borderBottomWidth: 1,
+                                    borderBottomColor: '#bbb', borderBottomWidth: 1, justifyContent: 'space-between',
                                     paddingTop: 5, paddingBottom: 5
                                     }}>
-                                    <View style={{ flex: 2, display: 'flex', flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
-                                        <View style={{ flex: 1, display: 'flex', flexDirection: 'column', alignSelf: 'center'  }}>
+                                    <View style={{ flex: 1, display: 'flex', flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
+                                        <View style={{ flex: 1, display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
                                             <Text style={{ color: '#901C7E', fontWeight: 'bold', marginLeft: 2 }}>Q: {truncate(item.question)}</Text>
                                         </View>
 
                                     </View>
-                                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                                    <View style={{ display: 'flex', flexDirection: 'row', alignSelf: 'flex-end' }}>
 
                                         <Icon
                                             reverse
@@ -292,10 +292,10 @@ export default class DeckContainer extends Component {
                         <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
                         </View>
 
-                        <View style={{ display: 'flex', margin: 15, flex: 1 }}>
-                            <Text style={{ color: '#901C7E', marginBottom: 20, display: 'flex', flex: 6 }}>You haven't got any cards yet, tap "Add Card" below to get create one!</Text>
+                        <View style={{ flex: 1, margin: 15, justifyContent: 'space-between', display: 'flex' }}>
+                            <Text style={{ color: '#901C7E', marginBottom: 20 }}>You haven't got any cards yet, tap "Add Card" below to get create one!</Text>
 
-                            <Animated.View style={{ marginTop: this.state.bounceValue, bottom: 60, left: 30, display: 'flex', flex: 1, alignSelf: 'flex-start' }}>
+                            <Animated.View style={{ bottom: this.state.bounceValue, left: 30, display: 'flex', alignSelf: 'flex-start' }}>
                                 <Icon
                                     name='hand-o-down'
                                     type='font-awesome'
@@ -307,7 +307,7 @@ export default class DeckContainer extends Component {
 
                     </React.Fragment>
                 )}
-                <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15 
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15 
                 }}>
                     <Button
                         raised
@@ -373,7 +373,7 @@ export default class DeckContainer extends Component {
                     </View>
                     <FormLabel labelStyle={{ color: '#901D7E' }}>Name</FormLabel>
                     <FormInput
-                        placeholder='Tap here to edit the title for the new deck'
+                        placeholder='Tap here to edit the name for the new deck'
                         onChangeText={title => this.setState(() => ({ title }))}
                         value={this.state.title}
                     />

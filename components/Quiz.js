@@ -170,14 +170,9 @@ export default class Quiz extends Component {
                             Quiz Completed!
                         </Text>
                         <Text style={{ color: '#05A071', textAlign: 'center', fontWeight: 'bold', alignSelf: 'center', fontSize: 20 }}>
-                            {`Total Score: ${(score / totalQuestions * 100).toFixed(0)}%\n${score} Correct Out of ${totalQuestions} Questions`}
+                            {`Total Score: ${(score / totalQuestions * 100).toFixed(0)}%\n${score} Questions Correct Out of ${totalQuestions}`}
                         </Text>
                     </View>
-
-                    {/* <Text>
-                        All done!
-                        {`\nTotal Score: ${(score / totalQuestions * 100).toFixed(0)}%\n${score} correct out of ${totalQuestions} questions`}
-                    </Text> */}
 
                     <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'stretch' }}>                        
                         <Button
