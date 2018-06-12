@@ -19,7 +19,7 @@ export default class Quiz extends Component {
                     name='x'
                     type='foundation'
                     color='#fff'
-                    containerStyle={{ marginRight: 20 }}
+                    containerStyle={{ marginRight: 20, padding: 10  }}
                     underlayColor={'transparent'}
                     onPress={() => {
                         navigation.goBack();
@@ -163,11 +163,21 @@ export default class Quiz extends Component {
                 )}
         
                 {completed && (
-                <React.Fragment>                    
-                    <Text>
+                <React.Fragment>
+
+                    <View style={{ display: 'flex', marginLeft: 10, marginRight: 10, marginTop: 10, elevation: 2, backgroundColor: '#fff', paddingTop: 5, paddingLeft: 10, paddingRight: 10, paddingBottom: 5 }}>
+                        <Text style={{ color: '#05A071', alignSelf: 'center', fontSize: 20 }}>
+                            Quiz Completed!
+                        </Text>
+                        <Text style={{ color: '#05A071', textAlign: 'center', fontWeight: 'bold', alignSelf: 'center', fontSize: 20 }}>
+                            {`Total Score: ${(score / totalQuestions * 100).toFixed(0)}%\n${score} Correct Out of ${totalQuestions} Questions`}
+                        </Text>
+                    </View>
+
+                    {/* <Text>
                         All done!
                         {`\nTotal Score: ${(score / totalQuestions * 100).toFixed(0)}%\n${score} correct out of ${totalQuestions} questions`}
-                    </Text>
+                    </Text> */}
 
                     <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'stretch' }}>                        
                         <Button

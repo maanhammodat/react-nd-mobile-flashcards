@@ -50,7 +50,7 @@ class DeckList extends Component {
         console.log('playanimation');
         Animated.loop(
             Animated.sequence([
-              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 20}),
+              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 50}),
               Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4})
             ])
         ).start();
@@ -139,7 +139,7 @@ class DeckList extends Component {
                 </View>
                 <View style={{ flex: 1 }}>
                     {(Object.keys(decks).length > 0) && (
-                        <View style={{ flex: 1, marginTop: -10 }}>
+                        <View style={{ flex: 1, marginTop: -20 }}>
                             <List>
                                 {
                                     decks.map((item, i) => (
@@ -171,10 +171,11 @@ class DeckList extends Component {
                         <React.Fragment>
                             <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
                             </View>
-                            <View style={{ display: 'flex', margin: 15 }}>
-                                <Text style={{ color: '#901C7E', marginBottom: 20 }}>You haven't got any decks yet, tap "Add Deck" below to get create one!</Text>
+
+                            <View style={{ display: 'flex', margin: 15, flex: 1 }}>
+                                <Text style={{ color: '#901C7E', marginBottom: 20, display: 'flex', flex: 6 }}>You haven't got any decks yet, tap "Add Deck" below to get create one!</Text>
                                 
-                                <Animated.View style={{marginTop: bounceValue}}>
+                                <Animated.View style={{ marginTop: bounceValue, bottom: 60, display: 'flex', flex: 1 }}>
                                     <Icon
                                         name='hand-o-down'
                                         type='font-awesome'
@@ -183,8 +184,8 @@ class DeckList extends Component {
                                     />
                                 </Animated.View>
                             </View>
+
                         </React.Fragment>
-                        // <Text>You haven't added anything yet, tap "Add Deck" below to get started.</Text>
                     )}
                     <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
                         <Button

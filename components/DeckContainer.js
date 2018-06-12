@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Modal } from 'react-native';
+import { View, Text, FlatList, Modal, Animated } from 'react-native';
 import { Button, FormLabel, FormInput, FormValidationMessage, Icon } from 'react-native-elements';
 import * as uuid from '../utils/uuid';
 import truncate from '../utils/truncate';
@@ -9,7 +9,7 @@ export default class DeckContainer extends Component {
     constructor(props) {
         super(props);
 
-        this.updateTitle = this.updateTitle.bind(this);
+        this.emptyListComponent = this.emptyListComponent.bind(this);
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -50,7 +50,18 @@ export default class DeckContainer extends Component {
         modals: { editTitle: false, addCard: false, editCard: false },
         currentCard: { question: '', answer: '', id: '' },
         newCard: { question: '', answer: '' },
-        errorMessages: { editTitle: '', addCard: '', editCard: '' }
+        errorMessages: { editTitle: '', addCard: '', editCard: '' },
+        bounceValue: new Animated.Value(1)
+    }
+
+    playAnimation(){
+        console.log('playanimation');
+        Animated.loop(
+            Animated.sequence([
+              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 50}),
+              Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4})
+            ])
+        ).start();
     }
 
     setModalVisible(modal, visible) {
@@ -167,18 +178,40 @@ export default class DeckContainer extends Component {
         this.setState({ errorMessages });
     }
 
+    emptyListComponent() {
+
+        Animated.loop(
+            Animated.sequence([
+              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 20}),
+              Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4})
+            ])
+        ).start();
+
+        return (
+            <View style={{ display: 'flex', margin: 15, flex: 1, backgroundColor: 'red', flexGrow: 1 }}>
+                <Text style={{ color: '#901C7E', marginBottom: 20, display: 'flex', backgroundColor: '#999' }}>You haven't got any decks yet, tap "Add Deck" below to get create one!</Text>
+
+                <Animated.View style={{ marginTop: this.state.bounceValue, bottom: 60, display: 'flex', flex: 1 }}>
+                    <Icon
+                        name='hand-o-down'
+                        type='font-awesome'
+                        color='#901C7E'
+                        size={50}
+                    />
+                </Animated.View>
+            </View>
+        );
+    }
+
     render() {
 
         const deck = this.state.deck ? JSON.parse(this.state.deck) : {};
         const questions = deck.questions;
+        const { modals } = this.state;
         
-        //console.log('DeckContainer rendered, state:',this.state.newCard);
+        (questions.length === 0 && Object.values(modals).every(visible => visible === false)) && this.playAnimation();
+        
         const errorMessages = this.state.errorMessages;
-        // const validation = errorMessage ? (
-        //     <FormValidationMessage containerStyle={{ marginBottom: 10 }}>
-        //         {errorMessage}
-        //     </FormValidationMessage>
-        // ) : null;
 
         return (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -193,63 +226,88 @@ export default class DeckContainer extends Component {
                 </View>
                 <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
                 </View>
-                <FlatList
-                    data={questions}
-                    renderItem={({ item }) => {
-                        return (
-                            <View style={{ 
-                                display: 'flex', flexDirection: 'row', flex: 1,
-                                borderBottomColor: '#bbb', borderBottomWidth: 1,
-                                paddingTop: 5, paddingBottom: 5
-                                }}>
-                                <View style={{ flex: 2, display: 'flex', flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
-                                    <View style={{ flex: 1, display: 'flex', flexDirection: 'column', alignSelf: 'center'  }}>
-                                        <Text style={{ color: '#901C7E', fontWeight: 'bold', marginLeft: 2 }}>Q: {truncate(item.question)}</Text>
+
+                {(questions.length > 0) && (
+                    <FlatList
+                        data={questions}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        renderItem={({ item }) => {
+                            return (
+                                <View style={{ 
+                                    display: 'flex', flexDirection: 'row', flex: 1,
+                                    borderBottomColor: '#bbb', borderBottomWidth: 1,
+                                    paddingTop: 5, paddingBottom: 5
+                                    }}>
+                                    <View style={{ flex: 2, display: 'flex', flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
+                                        <View style={{ flex: 1, display: 'flex', flexDirection: 'column', alignSelf: 'center'  }}>
+                                            <Text style={{ color: '#901C7E', fontWeight: 'bold', marginLeft: 2 }}>Q: {truncate(item.question)}</Text>
+                                        </View>
+
                                     </View>
+                                    <View style={{ flex: 1, flexDirection: 'row' }}>
 
+                                        <Icon
+                                            reverse
+                                            reverseColor={'#fff'}
+                                            name='pencil'
+                                            type='foundation'
+                                            color='#11549F'
+                                            size={18}
+                                            underlayColor={'transparent'}
+                                            onPress={() => {
+                                                this.clearFormError('editCard');
+                                                const currentCard = { ...this.state.currentCard }
+                                                currentCard.question = item.question;
+                                                currentCard.answer = item.answer;
+                                                currentCard.id = item.id;
+                                                this.setState({ currentCard });
+
+                                                console.log('EditCard button, currentCard', this.state.currentCard);
+                                                this.setModalVisible('editCard', true);
+                                            }}
+                                        />
+
+                                        <Icon
+                                            reverse
+                                            reverseColor={'#fff'}
+                                            name='trash'
+                                            type='foundation'
+                                            color='#cb2431'
+                                            size={18}
+                                            underlayColor={'transparent'}
+                                            onPress={() => {
+                                                this.deleteCard(item.id);
+                                            }}
+                                        />
+                                    </View>
                                 </View>
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
+                            )
+                        }}
+                        keyExtractor={item => item.id.toString()}
+                    />
+                )}
 
-                                    <Icon
-                                        reverse
-                                        reverseColor={'#fff'}
-                                        name='pencil'
-                                        type='foundation'
-                                        color='#11549F'
-                                        size={18}
-                                        underlayColor={'transparent'}
-                                        onPress={() => {
-                                            this.clearFormError('editCard');
-                                            const currentCard = { ...this.state.currentCard }
-                                            currentCard.question = item.question;
-                                            currentCard.answer = item.answer;
-                                            currentCard.id = item.id;
-                                            this.setState({ currentCard });
+                {(questions.length === 0) && (
+                    <React.Fragment>
+                        <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
+                        </View>
 
-                                            console.log('EditCard button, currentCard', this.state.currentCard);
-                                            this.setModalVisible('editCard', true);
-                                        }}
-                                    />
+                        <View style={{ display: 'flex', margin: 15, flex: 1 }}>
+                            <Text style={{ color: '#901C7E', marginBottom: 20, display: 'flex', flex: 6 }}>You haven't got any cards yet, tap "Add Card" below to get create one!</Text>
 
-                                    <Icon
-                                        reverse
-                                        reverseColor={'#fff'}
-                                        name='trash'
-                                        type='foundation'
-                                        color='#cb2431'
-                                        size={18}
-                                        underlayColor={'transparent'}
-                                        onPress={() => {
-                                            this.deleteCard(item.id);
-                                        }}
-                                    />
-                                </View>
-                            </View>
-                        )
-                    }}
-                    keyExtractor={item => item.id.toString()}
-                />
-                <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15 
+                            <Animated.View style={{ marginTop: this.state.bounceValue, bottom: 60, left: 30, display: 'flex', flex: 1, alignSelf: 'flex-start' }}>
+                                <Icon
+                                    name='hand-o-down'
+                                    type='font-awesome'
+                                    color='#901C7E'
+                                    size={50}
+                                />
+                            </Animated.View>
+                        </View>
+
+                    </React.Fragment>
+                )}
+                <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15 
                 }}>
                     <Button
                         raised

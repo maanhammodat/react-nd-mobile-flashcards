@@ -14,14 +14,11 @@ import { setLocalNotification } from './utils/notification';
 /**
  * TODO:
  * -Move LogoTitle into component
- * -Validation and limits to title and question / answer length
  * -CSS / Layout
- * -Animation for DeckListContainer
  * -Lock orientation
  * -Readme -> test on Android only
- * -Text for no cards / no decks
- * -Scrollview infinite
- * -Convert AddDeck component to Modal
+ * -Scrollview infinite (Change DeckListContainer List into FlatList)
+ * -File structure tidy up
  */
 
 class LogoTitle extends React.Component {
