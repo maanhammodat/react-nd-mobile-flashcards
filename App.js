@@ -21,6 +21,7 @@ import { setLocalNotification } from './utils/notification';
  * -Readme -> test on Android only
  * -Text for no cards / no decks
  * -Scrollview infinite
+ * -Convert AddDeck component to Modal
  */
 
 class LogoTitle extends React.Component {

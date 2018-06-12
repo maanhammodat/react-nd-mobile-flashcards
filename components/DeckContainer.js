@@ -28,7 +28,7 @@ export default class DeckContainer extends Component {
                     name='trash'
                     type='foundation'
                     color='#fff'
-                    containerStyle={{ marginRight: 20 }}
+                    containerStyle={{ marginRight: 20, padding: 10 }}
                     underlayColor={'transparent'}
                     onPress={() => {
                         deleteDeck(id)
@@ -171,7 +171,7 @@ export default class DeckContainer extends Component {
 
         const deck = this.state.deck ? JSON.parse(this.state.deck) : {};
         const questions = deck.questions;
-        console.log('this.state.errorMessages', this.state.errorMessages);
+        
         //console.log('DeckContainer rendered, state:',this.state.newCard);
         const errorMessages = this.state.errorMessages;
         // const validation = errorMessage ? (
@@ -262,8 +262,10 @@ export default class DeckContainer extends Component {
                             this.setModalVisible('addCard', true);
                         }}
                     />
+                    
                     <Button
                         raised
+                        disabled={(questions.length === 0)}
                         backgroundColor={'#05A071'}
                         buttonStyle={{ height: 43 }}
                         containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
@@ -277,6 +279,7 @@ export default class DeckContainer extends Component {
                             });
                         }}
                     />
+
                     <Button
                         raised
                         backgroundColor={'#11549F'}
@@ -324,10 +327,11 @@ export default class DeckContainer extends Component {
                     }
                     
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row' }}> 
                         <Button
                             raised
                             backgroundColor={'#59B324'}
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
                             icon={{ name: 'check', type: 'font-awesome' }}
                             title='SUBMIT'
                             onPress={() => {
@@ -337,6 +341,7 @@ export default class DeckContainer extends Component {
                         <Button
                             raised
                             icon={{ name: 'ban', type: 'font-awesome' }}
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
                             backgroundColor={ '#cb2431' }
                             title='CANCEL'                             
                             onPress={() => {
@@ -394,10 +399,11 @@ export default class DeckContainer extends Component {
                         )
                     }
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row' }}>
                         <Button
                             raised
                             backgroundColor={'#59B324'}
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
                             icon={{ name: 'check', type: 'font-awesome' }}
                             title='SUBMIT'
                             onPress={() => {
@@ -407,6 +413,7 @@ export default class DeckContainer extends Component {
                         <Button
                             raised
                             icon={{ name: 'ban', type: 'font-awesome' }}
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
                             backgroundColor={ '#cb2431' }
                             title='CANCEL'                             
                             onPress={() => {
@@ -435,7 +442,7 @@ export default class DeckContainer extends Component {
                             type='foundation'
                             color='#667'
                         />
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>ADD CARD</Text>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>EDIT CARD</Text>
                     </View>
                     <FormLabel labelStyle={{ color: '#901D7E' }}>Question</FormLabel>
                     <FormInput
@@ -467,10 +474,11 @@ export default class DeckContainer extends Component {
                     }
                     
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row' }}>
                         <Button
                             raised
                             backgroundColor={'#59B324'}
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
                             icon={{ name: 'check', type: 'font-awesome' }}
                             title='SUBMIT'
                             onPress={() => {
@@ -480,6 +488,7 @@ export default class DeckContainer extends Component {
                         <Button
                             raised
                             icon={{ name: 'ban', type: 'font-awesome' }}
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
                             backgroundColor={ '#cb2431' }
                             title='CANCEL'                             
                             onPress={() => {

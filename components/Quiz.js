@@ -80,17 +80,46 @@ export default class Quiz extends Component {
         const completed = this.state.completed;
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
 
                 {!completed && (
 
                 <React.Fragment>
-                    <Text>
+                    <View style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', marginLeft: 10, marginRight: 10, marginTop: 10 }}>
+                        <Text style={{ color: '#667', fontWeight: 'bold' }}>
+                            {`Number: ${currentQuestion + 1} / ${totalQuestions}`}
+                        </Text>
+                        <Text style={{ color: '#667', fontWeight: 'bold' }}>
+                            {`Score:  ${score} / ${totalQuestions}`}
+                        </Text>
+                    </View>
+
+                    <View style={{ display: 'flex', marginLeft: 10, marginRight: 10, marginTop: 10, elevation: 2, backgroundColor: '#fff', paddingTop: 5, paddingLeft: 10, paddingRight: 10, paddingBottom: 5 }}>
+                        <Text style={{ color: '#901C7E', alignSelf: 'center', fontSize: 20 }}>
+                            Question:
+                        </Text>
+                        <Text style={{ color: '#901C7E', fontWeight: 'bold', textAlign: 'center', alignSelf: 'center', fontSize: 20 }}>
+                            {`${questions[currentQuestion].question}`}
+                        </Text>
+                    </View>
+                    
+                    {flipped && (
+                        <View style={{ display: 'flex', marginLeft: 10, marginRight: 10, marginTop: 10, elevation: 2, backgroundColor: '#fff', paddingTop: 5, paddingLeft: 10, paddingRight: 10, paddingBottom: 5 }}>
+                            <Text style={{ color: '#05A071', alignSelf: 'center', fontSize: 20 }}>
+                                Answer:
+                            </Text>
+                            <Text style={{ color: '#05A071', textAlign: 'center', fontWeight: 'bold', alignSelf: 'center', fontSize: 20 }}>
+                                {`${questions[currentQuestion].answer}`}
+                            </Text>
+                        </View>
+                    )}
+                    
+                    {/* <Text>
                         {`Number: ${currentQuestion + 1} / ${totalQuestions}\n`}
                         {`Score:  ${score} / ${totalQuestions}\n`}
                         {`Q: ${questions[currentQuestion].question}\n`}
                         {flipped && `A: ${questions[currentQuestion].answer}`}
-                    </Text>
+                    </Text> */}
 
                     <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
                         {!flipped && (
@@ -105,22 +134,28 @@ export default class Quiz extends Component {
                             />
                         )}
                         {flipped && (
-                            <React.Fragment>
-                            <Button
-                                raised
-                                title='Correct'
-                                onPress={() => {
-                                    this.handleAnswer('correct', currentQuestion, totalQuestions)
-                                }}
-                            />
-                            <Button
-                                raised
-                                title='Incorrect'
-                                onPress={() => {
-                                    this.handleAnswer('incorrect', currentQuestion, totalQuestions)
-                                }}
-                            />
-                            </React.Fragment>
+                            <View style={{ display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'stretch' }}>
+                                <Button
+                                    raised
+                                    title='Correct'
+                                    containerViewStyle={{ flex: 1, display: 'flex' }}
+                                    backgroundColor={'#59B324'}
+                                    icon={{ name: 'thumbs-up', type: 'font-awesome' }}
+                                    onPress={() => {
+                                        this.handleAnswer('correct', currentQuestion, totalQuestions)
+                                    }}
+                                />
+                                <Button
+                                    raised
+                                    title='Incorrect'
+                                    containerViewStyle={{ flex: 1, display: 'flex' }}
+                                    backgroundColor={'#cb2431'}
+                                    icon={{ name: 'thumbs-down', type: 'font-awesome' }}
+                                    onPress={() => {
+                                        this.handleAnswer('incorrect', currentQuestion, totalQuestions)
+                                    }}
+                                />
+                            </View>
                         )}
                     </View>
                 </React.Fragment>
@@ -128,25 +163,33 @@ export default class Quiz extends Component {
                 )}
         
                 {completed && (
-                <React.Fragment>
+                <React.Fragment>                    
                     <Text>
                         All done!
                         {`\nTotal Score: ${(score / totalQuestions * 100).toFixed(0)}%\n${score} correct out of ${totalQuestions} questions`}
                     </Text>
 
-                    <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+                    <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'stretch' }}>                        
                         <Button
                             raised
-                            title='Restart Quiz'
+                            title='Back to Deck'
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
+                            backgroundColor={'#291CA9'}
+                            buttonStyle={{ height: 43 }}
+                            icon={{ name: 'arrow-back' }}
                             onPress={() => {
-                                this.restartQuiz();
+                                this.props.navigation.goBack();
                             }}
                         />
                         <Button
                             raised
-                            title='Back to Deck'
+                            title='Restart Quiz'
+                            containerViewStyle={{ flex: 1, display: 'flex' }}
+                            backgroundColor={'#05A071'}
+                            buttonStyle={{ height: 43 }}
+                            icon={{ name: 'loop', type: 'foundation' }}
                             onPress={() => {
-                                this.props.navigation.goBack();
+                                this.restartQuiz();
                             }}
                         />
                     </View>

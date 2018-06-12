@@ -86,10 +86,11 @@ class AddDeckForm extends Component {
                 />
                 {validation}
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row' }}> 
                     <Button
                         raised
                         backgroundColor={'#59B324'}
+                        containerViewStyle={{ flex: 1, display: 'flex' }}
                         icon={{ name: 'check', type: 'font-awesome' }}
                         title='SUBMIT'
                         onPress={() => {
@@ -98,8 +99,9 @@ class AddDeckForm extends Component {
                     />
                     <Button
                         raised
-                        icon={{ name: 'ban', type: 'font-awesome' }}
                         backgroundColor={ '#cb2431' }
+                        icon={{ name: 'ban', type: 'font-awesome' }}
+                        containerViewStyle={{ flex: 1, display: 'flex' }}                        
                         title='CANCEL'                             
                         onPress={() => {
                             this.props.navigation.navigate('Home');
