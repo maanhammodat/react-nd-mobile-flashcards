@@ -1,6 +1,6 @@
 # Mobile FlashCards
 
-This app allows users to create flash study cards with questions and answers. Users can create, edit and delete Decks and Cards and run a Quizzes.
+This app allows users to create flash study cards with questions and answers. Users can create, edit and delete Decks and Cards and run Quizzes.
 
 ## Installation
 
