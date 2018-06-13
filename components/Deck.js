@@ -244,7 +244,7 @@ export default class Deck extends Component {
                     <View style={styles.fallBackContainer}>
                         <Text style={{ color: '#901C7E' }}>You haven't got any cards yet, tap "Add Card" below to get create one!</Text>
 
-                        <Animated.View style={{ bottom: this.state.bounceValue, left: 30, display: 'flex', alignSelf: 'flex-start' }}>
+                        <Animated.View style={{ bottom: this.state.bounceValue, left: 10, display: 'flex', alignSelf: 'flex-start' }}>
                             <Icon
                                 name='hand-o-down'
                                 type='font-awesome'

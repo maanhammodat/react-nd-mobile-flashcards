@@ -73,6 +73,18 @@ export default class DeckList extends Component {
         this.props.addDeck(deck);
         this.setModalVisible(false);
         this.setState({ deckTitle: '', errorMessage: '' });
+
+
+        this.props.navigation.navigate('Deck', {
+            id: deck.id,
+            title: deck.title,
+            deck: JSON.stringify(deck),
+            updateTitle: (id, title) => this.props.updateTitle(id, title),
+            addCardToDeck: (id, card) => this.props.addCardToDeck(id, card),
+            updateCard: (id, title) => this.props.updateCard(id, title),
+            deleteDeck: (id) => this.props.deleteDeck(id),
+            deleteCard: (id, cardId) => this.props.deleteCard(id, cardId)
+        });
     }
 
     invalidTitle(error){
