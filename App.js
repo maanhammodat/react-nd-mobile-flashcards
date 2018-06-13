@@ -1,45 +1,18 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
-import { AppProvider } from './components/provider';
+import { AppProvider } from './components/Provider';
+import LogoTitle from './components/LogoTitle';
 import DeckListContainer from './components/DeckListContainer';
-import DeckContainer from './components/DeckContainer';
-import AddDeck from './components/AddDeck';
-import EditDeck from './components/EditDeck';
-import AddCard from './components/AddCard';
+import Deck from './components/Deck';
 import Quiz from './components/Quiz';
 import { createStackNavigator } from 'react-navigation';
 import { setLocalNotification } from './utils/notification';
 
 Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT);
-/**
- * TODO:
- * -Move LogoTitle into component
- * -CSS / Layout
- * -Readme -> test on Android only
- * -File structure tidy up
- */
-
-class LogoTitle extends React.Component {
-  render() {
-    return (
-      <View style={{ display: 'flex', flexDirection: 'row', flex: 1, justifyContent: 'center' }}>
-        <Image
-          source={require('./images/brain2.png')}
-          style={{ width: 30, height: 30, marginLeft: 5 }}
-        />
-        <Text style={{ color: '#fff', marginLeft: 5, marginTop:2, fontSize: 18, fontWeight: '900' }}>MOBILE FLASHCARDS</Text>
-      </View>
-    );
-  }
-}
 
 const RootStack = createStackNavigator(
   {
     Home: DeckListContainer,
-    AddDeck: AddDeck,
-    Deck: DeckContainer,
-    EditDeck: EditDeck,
-    AddCard: AddCard,
+    Deck: Deck,
     Quiz: Quiz
   },
   {
@@ -52,7 +25,7 @@ const RootStack = createStackNavigator(
       headerTitleStyle: {
         color: '#fff',
       },
-      headerTintColor: '#fff',
+      headerTintColor: '#fff'
     }
   }
 );
@@ -71,13 +44,3 @@ export default class App extends React.Component {
     )
   }
 }
-
-// export default class App extends React.Component {
-//   render() {
-//     return (
-//       <AppProvider>
-//         <Test/>
-//       </AppProvider>
-//     )
-//   }
-// }

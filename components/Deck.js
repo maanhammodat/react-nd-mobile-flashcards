@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Modal, Animated } from 'react-native';
+import { View, Text, FlatList, Modal, Animated, StyleSheet } from 'react-native';
 import { Button, FormLabel, FormInput, FormValidationMessage, Icon } from 'react-native-elements';
 import * as uuid from '../utils/uuid';
 import truncate from '../utils/truncate';
 
-export default class DeckContainer extends Component {
+export default class Deck extends Component {
 
     constructor(props) {
         super(props);
-
-        this.emptyListComponent = this.emptyListComponent.bind(this);
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -18,8 +16,6 @@ export default class DeckContainer extends Component {
         const title = params.title;
         const deleteDeck = params.deleteDeck;
         const id = params.id;
-
-        console.log('DeckContainer: navopts');
 
         return {
             headerTitle: title,
@@ -33,7 +29,6 @@ export default class DeckContainer extends Component {
                     onPress={() => {
                         deleteDeck(id)
                         .then(() => {
-                            console.log('deleteDeck component callback');
                             navigation.navigate('Home');
                         });
                      }                        
@@ -55,13 +50,14 @@ export default class DeckContainer extends Component {
     }
 
     playAnimation(){
-        console.log('playanimation');
+        
         Animated.loop(
             Animated.sequence([
               Animated.timing(this.state.bounceValue, { duration: 200, toValue: 15 }),
               Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4 })
             ])
         ).start();
+
     }
 
     setModalVisible(modal, visible) {
@@ -105,22 +101,18 @@ export default class DeckContainer extends Component {
         const id = this.state.id;
 
         card.id = uuid.generate();
-        console.log('addCardToDeck:',card);
         
         this.props.navigation.state.params.addCardToDeck(id, card)
         .then((deck) => {
             this.setState({ deck });
             this.props.navigation.setParams({ deck });
-            console.log('addCardToDeck CB: state: ',this.state.deck);
             this.setModalVisible('addCard', false);
         });
     }
 
     updateCard() {        
-        console.log('updateCard()');
 
         const card = this.state.currentCard;
-        console.log('updateCard: ',card);
 
         if (card.question === '' || card.answer === ''){
             this.handleFormError('editCard', 'no question or answer');
@@ -129,29 +121,22 @@ export default class DeckContainer extends Component {
         
         const id = this.state.id;
         
-        console.log('updateCard:',card);
-        
         this.props.navigation.state.params.updateCard(id, card)
         .then((deck) => {
             this.setState({ deck });            
             this.props.navigation.setParams({ deck });
-            console.log('updateCard CB: state: ',this.state.deck);
             this.setModalVisible('editCard', false);
         });
     }
 
     deleteCard(cardId){
-        console.log('deleteCard');
         
         const id = this.state.id;
-        
-        console.log('deleteCard:', cardId);
         
         this.props.navigation.state.params.deleteCard(id, cardId)
         .then((deck) => {
             this.setState({ deck });            
             this.props.navigation.setParams({ deck });
-            console.log('deleteCard CB: state: ',this.state.deck);
         });
     }
 
@@ -167,40 +152,12 @@ export default class DeckContainer extends Component {
         const errorMessages = { ...this.state.errorMessages }
         errorMessages[modal] = message;
         this.setState({ errorMessages });
-
-        console.log('handleFormError', message, modal, errorMessages[modal]);
-        console.log('handleFormError', this.state.errorMessages);
     }
 
     clearFormError(modal){
         const errorMessages = { ...this.state.errorMessages }
         errorMessages[modal] = '';
         this.setState({ errorMessages });
-    }
-
-    emptyListComponent() {
-
-        Animated.loop(
-            Animated.sequence([
-              Animated.timing(this.state.bounceValue, { duration: 200, toValue: 20}),
-              Animated.spring(this.state.bounceValue, { toValue: 1, friction: 4})
-            ])
-        ).start();
-
-        return (
-            <View style={{ display: 'flex', margin: 15, flex: 1, backgroundColor: 'red', flexGrow: 1 }}>
-                <Text style={{ color: '#901C7E', marginBottom: 20, display: 'flex', backgroundColor: '#999' }}>You haven't got any decks yet, tap "Add Deck" below to get create one!</Text>
-
-                <Animated.View style={{ marginTop: this.state.bounceValue, bottom: 60, display: 'flex', flex: 1 }}>
-                    <Icon
-                        name='hand-o-down'
-                        type='font-awesome'
-                        color='#901C7E'
-                        size={50}
-                    />
-                </Animated.View>
-            </View>
-        );
     }
 
     render() {
@@ -214,17 +171,14 @@ export default class DeckContainer extends Component {
         const errorMessages = this.state.errorMessages;
 
         return (
-            <View style={{ flex: 1, backgroundColor: '#fff' }}>
-                <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10, marginBottom: 10 }}>
+            <View style={styles.container}>
+                <View style={styles.header}>
                     <Icon
                         name='cards-outline'
                         type='material-community'
                         color='#667'
-                    // containerStyle={{ backgroundColor:  }}
                     />
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>CARDS</Text>
-                </View>
-                <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
+                    <Text style={styles.headerTitle}>CARDS ({questions.length})</Text>
                 </View>
 
                 {(questions.length > 0) && (
@@ -233,18 +187,18 @@ export default class DeckContainer extends Component {
                         contentContainerStyle={{ flexGrow: 1 }}
                         renderItem={({ item }) => {
                             return (
-                                <View style={{ 
-                                    display: 'flex', flexDirection: 'row', flex: 1,
-                                    borderBottomColor: '#bbb', borderBottomWidth: 1, justifyContent: 'space-between',
-                                    paddingTop: 5, paddingBottom: 5
-                                    }}>
-                                    <View style={{ flex: 1, display: 'flex', flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
-                                        <View style={{ flex: 1, display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
-                                            <Text style={{ color: '#901C7E', fontWeight: 'bold', marginLeft: 2 }}>Q: {truncate(item.question)}</Text>
-                                        </View>
+
+                                <View style={styles.listItem}>
+
+                                    <View style={styles.listTitleContainer}>
+                                    
+                                            <Text style={styles.listTitle}>
+                                                Q: {truncate(item.question)}
+                                            </Text>
 
                                     </View>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignSelf: 'flex-end' }}>
+
+                                    <View style={styles.listControls}>
 
                                         <Icon
                                             reverse
@@ -261,8 +215,6 @@ export default class DeckContainer extends Component {
                                                 currentCard.answer = item.answer;
                                                 currentCard.id = item.id;
                                                 this.setState({ currentCard });
-
-                                                console.log('EditCard button, currentCard', this.state.currentCard);
                                                 this.setModalVisible('editCard', true);
                                             }}
                                         />
@@ -288,32 +240,28 @@ export default class DeckContainer extends Component {
                 )}
 
                 {(questions.length === 0) && (
-                    <React.Fragment>
-                        <View style={{ borderTopWidth: 1, borderColor: '#bbb' }}>
-                        </View>
 
-                        <View style={{ flex: 1, margin: 15, justifyContent: 'space-between', display: 'flex' }}>
-                            <Text style={{ color: '#901C7E', marginBottom: 20 }}>You haven't got any cards yet, tap "Add Card" below to get create one!</Text>
+                    <View style={styles.fallBackContainer}>
+                        <Text style={{ color: '#901C7E' }}>You haven't got any cards yet, tap "Add Card" below to get create one!</Text>
 
-                            <Animated.View style={{ bottom: this.state.bounceValue, left: 30, display: 'flex', alignSelf: 'flex-start' }}>
-                                <Icon
-                                    name='hand-o-down'
-                                    type='font-awesome'
-                                    color='#901C7E'
-                                    size={50}
-                                />
-                            </Animated.View>
-                        </View>
+                        <Animated.View style={{ bottom: this.state.bounceValue, left: 30, display: 'flex', alignSelf: 'flex-start' }}>
+                            <Icon
+                                name='hand-o-down'
+                                type='font-awesome'
+                                color='#901C7E'
+                                size={50}
+                            />
+                        </Animated.View>
+                    </View>
 
-                    </React.Fragment>
                 )}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15 
-                }}>
+
+                <View style={styles.footer}>
                     <Button
                         raised
                         backgroundColor={'#291CA9'}
-                        buttonStyle={{ height: 43 }}
-                        containerViewStyle={{ marginLeft: 0, marginRight: 0 }}                        
+                        buttonStyle={styles.footerButton}
+                        containerViewStyle={styles.footerButtonContainer}                        
                         icon={{ name: 'plus', type: 'font-awesome' }}
                         title='Add Card'
                         onPress={() => {
@@ -325,8 +273,8 @@ export default class DeckContainer extends Component {
                         raised
                         disabled={(questions.length === 0)}
                         backgroundColor={'#05A071'}
-                        buttonStyle={{ height: 43 }}
-                        containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
+                        buttonStyle={styles.footerButton}
+                        containerViewStyle={styles.footerButtonContainer}
                         icon={{ name: 'question', type: 'font-awesome' }}
                         title='Start Quiz'
                         onPress={() => {
@@ -341,8 +289,8 @@ export default class DeckContainer extends Component {
                     <Button
                         raised
                         backgroundColor={'#11549F'}
-                        buttonStyle={{ height: 43 }}
-                        containerViewStyle={{ marginLeft: 0, marginRight: 0 }}
+                        buttonStyle={styles.footerButton}
+                        containerViewStyle={styles.footerButtonContainer}
                         icon={{ name: 'pencil', type: 'foundation' }}
                         title='Edit Deck'
                         onPress={() => {
@@ -351,9 +299,7 @@ export default class DeckContainer extends Component {
                     />
                 </View>
                 
-                {
-                //Edit Title
-                }
+                {/* Edit Title */}
                 <Modal
                     animationType="slide"
                     transparent={false}
@@ -363,15 +309,15 @@ export default class DeckContainer extends Component {
                     }}
                 >
 
-                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10 }}>
+                    <View style={styles.modalHeader}>
                         <Icon
                             name='pencil'
                             type='foundation'
                             color='#667'
                         />
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>EDIT DECK</Text>
+                        <Text style={styles.headerTitle}>EDIT DECK</Text>
                     </View>
-                    <FormLabel labelStyle={{ color: '#901D7E' }}>Name</FormLabel>
+                    <FormLabel labelStyle={styles.formLabel}>Name</FormLabel>
                     <FormInput
                         placeholder='Tap here to edit the name for the new deck'
                         onChangeText={title => this.setState(() => ({ title }))}
@@ -410,9 +356,7 @@ export default class DeckContainer extends Component {
 
                 </Modal>
 
-                {
-                //Add Card
-                }
+                { /* Add Card */ }
                 <Modal
                     animationType="slide"
                     transparent={false}
@@ -422,15 +366,15 @@ export default class DeckContainer extends Component {
                     }}
                 >
 
-                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10 }}>
+                    <View style={styles.modalHeader}>
                         <Icon
                             name='plus'
                             type='font-awesome'
                             color='#667'
                         />
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>ADD CARD</Text>
+                        <Text style={styles.headerTitle}>ADD CARD</Text>
                     </View>
-                    <FormLabel labelStyle={{ color: '#901D7E' }}>Question</FormLabel>
+                    <FormLabel labelStyle={styles.formLabel}>Question</FormLabel>
                     <FormInput
                         onChangeText={
                             (question) => {
@@ -440,7 +384,7 @@ export default class DeckContainer extends Component {
                             }
                         }
                     />
-                    <FormLabel labelStyle={{ color: '#901D7E' }}>Answer</FormLabel>
+                    <FormLabel labelStyle={styles.formLabel}>Answer</FormLabel>
                     <FormInput
                         onChangeText={
                             (answer) => {
@@ -482,9 +426,7 @@ export default class DeckContainer extends Component {
 
                 </Modal>
 
-                {
-                //Edit Card
-                }            
+                { /* Edit Card */ }
                 <Modal
                     animationType="slide"
                     transparent={false}
@@ -494,15 +436,15 @@ export default class DeckContainer extends Component {
                     }}
                 >
 
-                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10 }}>
+                    <View style={styles.modalHeader}>
                         <Icon
                             name='pencil'
                             type='foundation'
                             color='#667'
                         />
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#667', marginLeft: 5, marginTop: 1 }}>EDIT CARD</Text>
+                        <Text style={styles.headerTitle}>EDIT CARD</Text>
                     </View>
-                    <FormLabel labelStyle={{ color: '#901D7E' }}>Question</FormLabel>
+                    <FormLabel labelStyle={styles.formLabel}>Question</FormLabel>
                     <FormInput
                         onChangeText={
                             (question) => {
@@ -513,7 +455,7 @@ export default class DeckContainer extends Component {
                         }
                         value={this.state.currentCard.question}
                     />
-                    <FormLabel labelStyle={{ color: '#901D7E' }}>Answer</FormLabel>
+                    <FormLabel labelStyle={styles.formLabel}>Answer</FormLabel>
                     <FormInput
                         onChangeText={
                             (answer) => {
@@ -530,7 +472,6 @@ export default class DeckContainer extends Component {
                         </FormValidationMessage>
                         )
                     }
-                    
 
                     <View style={{ flexDirection: 'row' }}>
                         <Button
@@ -562,3 +503,82 @@ export default class DeckContainer extends Component {
         )
     }
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff'
+    },
+    header: {
+        flexDirection: 'row',
+        marginTop: 10,
+        paddingLeft: 10,
+        paddingBottom: 10,
+        borderBottomColor: '#bbb',
+        borderBottomWidth: 1
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#667',
+        marginLeft: 5,
+        marginTop: 1
+    },
+    listItem: {
+        display: 'flex',
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'space-between',
+        borderBottomColor: '#bbb',
+        borderBottomWidth: 1,
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    listTitleContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginLeft: 10,
+        marginRight: 10,
+        flex: 1
+    },
+    listTitle: {
+        color: '#901C7E',
+        fontWeight: 'bold',
+        marginLeft: 2,
+        marginRight: 10,
+        flexDirection: 'column',
+        alignSelf: 'center',
+        display: 'flex'
+    },
+    listControls: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignSelf: 'flex-end'
+    },
+    fallBackContainer: {
+        justifyContent: 'space-between',
+        display: 'flex',
+        margin: 15,
+        flex: 1
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    footerButton: {
+        height: 43
+    },
+    footerButtonContainer: {
+        marginLeft: 0,
+        marginRight: 0
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        marginTop: 20,
+        marginLeft: 10
+    },
+    formLabel: {
+        color: '#901D7E'
+    }
+});
